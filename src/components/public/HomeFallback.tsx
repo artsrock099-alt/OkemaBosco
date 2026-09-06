@@ -50,9 +50,9 @@ export default async function HomeFallback() {
           <img
             src="/OKema/Pic1.jpeg"
             alt="Bosco Okema performing live on stage with traditional Ugandan instruments, moody cinematic lighting"
-            className="w-full h-full object-cover opacity-50"
+            className="w-full h-full object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/30 to-transparent" />
         </div>
         <div className="relative z-10 container-x grid grid-cols-1 md:grid-cols-12 gap-gutter items-end">
           <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6">
@@ -300,13 +300,6 @@ export default async function HomeFallback() {
               alt="Video thumbnail - Bosco Okema performing live"
               className="w-full h-full object-cover"
             />
-            <button className="absolute inset-0 flex items-center justify-center group">
-              <span className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-warm-ivory/90 text-deep-charcoal flex items-center justify-center transition-all group-hover:scale-110 group-hover:bg-muted-ochre group-hover:text-white">
-                <svg className="w-10 h-10 ml-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-            </button>
           </div>
           <div className="text-center mt-10">
             <Link href="/listen" className="btn-outline text-warm-ivory">

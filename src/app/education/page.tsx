@@ -16,7 +16,7 @@ const programs = [
     description:
       'Interactive music, traditional instruments, storytelling, rhythm and cultural learning for students of all ages.',
     cta: 'REQUEST A SCHOOL PROGRAM',
-    image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=80',
+    image: '/OKema/IMG_2190.jpeg',
   },
   {
     slug: 'elderly-visits',
@@ -26,7 +26,7 @@ const programs = [
     description:
       'Live musical experiences designed for senior communities, assisted living, memory care and senior centers.',
     cta: 'SCHEDULE A PERFORMANCE',
-    image: 'https://images.unsplash.com/photo-1516307365426-bea591f05011?w=1200&q=80',
+    image: '/OKema/PrimRoseElders6.jpeg',
   },
   {
     slug: 'live-performance',
@@ -36,7 +36,7 @@ const programs = [
     description:
       'Solo, small ensemble or full band performances for concerts, festivals, weddings, churches and cultural celebrations.',
     cta: 'REQUEST A PERFORMANCE',
-    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80',
+    image: '/OKema/pic3.jpeg',
   },
 ];
 
