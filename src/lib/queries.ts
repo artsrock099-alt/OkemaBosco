@@ -1,6 +1,7 @@
-import { prisma } from './db';
+import { prisma, isDatabaseConfigured } from './db';
 
 export async function getSiteSettings() {
+  if (!isDatabaseConfigured) return null;
   const settings = await prisma.siteSettings.findFirst({
     include: {
       defaultHeroImage: true,
@@ -12,6 +13,7 @@ export async function getSiteSettings() {
 }
 
 export async function getSocialLinks() {
+  if (!isDatabaseConfigured) return [];
   return prisma.socialLink.findMany({
     where: { isVisible: true },
     orderBy: { order: 'asc' },
@@ -19,6 +21,7 @@ export async function getSocialLinks() {
 }
 
 export async function getNavigation(name = 'main') {
+  if (!isDatabaseConfigured) return null;
   return prisma.navigation.findFirst({
     where: { name },
     include: {
@@ -37,6 +40,7 @@ export async function getNavigation(name = 'main') {
 }
 
 export async function getHomepage() {
+  if (!isDatabaseConfigured) return null;
   return prisma.page.findFirst({
     where: { isHomepage: true, status: 'PUBLISHED' },
     include: {
@@ -50,6 +54,7 @@ export async function getHomepage() {
 }
 
 export async function getPageBySlug(slug: string) {
+  if (!isDatabaseConfigured) return null;
   return prisma.page.findFirst({
     where: { slug, status: 'PUBLISHED' },
     include: {
@@ -63,6 +68,7 @@ export async function getPageBySlug(slug: string) {
 }
 
 export async function getUpcomingEvents(take = 5) {
+  if (!isDatabaseConfigured) return [];
   return prisma.event.findMany({
     where: {
       isPublished: true,
@@ -75,6 +81,7 @@ export async function getUpcomingEvents(take = 5) {
 }
 
 export async function getPastEvents(take = 10) {
+  if (!isDatabaseConfigured) return [];
   return prisma.event.findMany({
     where: {
       isPublished: true,
@@ -87,6 +94,7 @@ export async function getPastEvents(take = 10) {
 }
 
 export async function getAllEvents() {
+  if (!isDatabaseConfigured) return [];
   return prisma.event.findMany({
     where: { isPublished: true },
     include: { category: true, image: true },
@@ -95,6 +103,7 @@ export async function getAllEvents() {
 }
 
 export async function getEventBySlug(slug: string) {
+  if (!isDatabaseConfigured) return null;
   return prisma.event.findFirst({
     where: { slug, isPublished: true },
     include: {
@@ -106,6 +115,7 @@ export async function getEventBySlug(slug: string) {
 }
 
 export async function getTestimonials(featuredOnly = false, take?: number) {
+  if (!isDatabaseConfigured) return [];
   return prisma.testimonial.findMany({
     where: {
       isVisible: true,
@@ -118,6 +128,7 @@ export async function getTestimonials(featuredOnly = false, take?: number) {
 }
 
 export async function getMusic(featuredOnly = false, take?: number) {
+  if (!isDatabaseConfigured) return [];
   return prisma.music.findMany({
     where: featuredOnly ? { isFeatured: true } : {},
     include: { album: true, artwork: true, audio: true },
@@ -127,6 +138,7 @@ export async function getMusic(featuredOnly = false, take?: number) {
 }
 
 export async function getEducationPrograms() {
+  if (!isDatabaseConfigured) return [];
   return prisma.educationProgram.findMany({
     where: { isPublished: true },
     include: { heroImage: true, seo: true },
@@ -135,6 +147,7 @@ export async function getEducationPrograms() {
 }
 
 export async function getEducationProgramBySlug(slug: string) {
+  if (!isDatabaseConfigured) return null;
   return prisma.educationProgram.findFirst({
     where: { slug, isPublished: true },
     include: { heroImage: true, seo: { include: { socialImage: true } } },
@@ -142,6 +155,7 @@ export async function getEducationProgramBySlug(slug: string) {
 }
 
 export async function getInstruments() {
+  if (!isDatabaseConfigured) return [];
   return prisma.instrument.findMany({
     where: { isVisible: true },
     include: { image: true },
@@ -150,6 +164,7 @@ export async function getInstruments() {
 }
 
 export async function getArticles(take?: number) {
+  if (!isDatabaseConfigured) return [];
   return prisma.article.findMany({
     where: { status: 'PUBLISHED' },
     include: { category: true, featuredImage: true, author: true },
@@ -159,6 +174,7 @@ export async function getArticles(take?: number) {
 }
 
 export async function getArticleBySlug(slug: string) {
+  if (!isDatabaseConfigured) return null;
   return prisma.article.findFirst({
     where: { slug, status: 'PUBLISHED' },
     include: {
@@ -172,6 +188,7 @@ export async function getArticleBySlug(slug: string) {
 }
 
 export async function getPressItems() {
+  if (!isDatabaseConfigured) return [];
   return prisma.press.findMany({
     include: { image: true },
     orderBy: { date: 'desc' },
@@ -179,6 +196,7 @@ export async function getPressItems() {
 }
 
 export async function getGalleryImages(type?: 'image' | 'video') {
+  if (!isDatabaseConfigured) return [];
   return prisma.media.findMany({
     where: { type: type === 'video' ? 'VIDEO' : 'IMAGE' },
     orderBy: { createdAt: 'desc' },
