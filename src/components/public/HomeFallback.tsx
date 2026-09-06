@@ -5,9 +5,6 @@ import { TestimonialCard } from '@/components/public/TestimonialCard';
 import NewsletterForm from '@/components/public/NewsletterForm';
 import { getUpcomingEvents, getTestimonials, getInstruments } from '@/lib/queries';
 
-const PLACEHOLDER_HERO =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuA-N2I3AaRVr7rcVH8j0HmR3y1rftjbiFXJ-WlsQIdf5MR5RinpR-lNebU_lP8zlO-Dh8kyQT4-RgXxvVVnLEXbRPltYTpZCP-INvfgN3Xx_1cyheFttVPlt5aXb9lWOGa7R39PXEKJcpHcqIYhYSFtQ9SaqNtDbR6Rd_8ljolku2I8Xn_mLNoz-m7tleMdQltbkEoBq-bqdyBFCnplPsLErBRt1E6U42AOUTJb-80rDFn41G8-Xlq9ZA';
-
 const services = [
   {
     slug: 'live-performance',
@@ -16,8 +13,7 @@ const services = [
     subtitle: 'Experience the Music of Uganda',
     description:
       'Traditional instruments, vocals, rhythm, storytelling and contemporary musical expression for festivals, concerts and special events.',
-    image:
-      'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80',
+    image: '/OKema/pic3.jpeg',
   },
   {
     slug: 'school-residency',
@@ -26,8 +22,7 @@ const services = [
     subtitle: 'Bring African Music Into Your Classroom',
     description:
       'Interactive music, traditional instruments, storytelling, rhythm and cultural learning for students of all ages.',
-    image:
-      'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=80',
+    image: '/OKema/IMG_2190.jpeg',
   },
   {
     slug: 'elderly-visits',
@@ -36,8 +31,7 @@ const services = [
     subtitle: 'Music That Creates Connection',
     description:
       'Live musical experiences for senior communities, assisted living facilities, nursing homes and senior centers.',
-    image:
-      'https://images.unsplash.com/photo-1516307365426-bea591f05011?w=1200&q=80',
+    image: '/OKema/PrimRoseElders6.jpeg',
   },
 ];
 
@@ -54,7 +48,7 @@ export default async function HomeFallback() {
       <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-16 md:pb-24 bg-deep-charcoal text-white overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
-            src={PLACEHOLDER_HERO}
+            src="/OKema/Pic1.jpeg"
             alt="Bosco Okema performing live on stage with traditional Ugandan instruments, moody cinematic lighting"
             className="w-full h-full object-cover opacity-50"
           />
@@ -99,7 +93,7 @@ export default async function HomeFallback() {
           <div className="md:col-span-5 order-2 md:order-1">
             <div className="relative aspect-[4/5] overflow-hidden rounded-tl-3xl rounded-br-3xl">
               <img
-                src="https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=1000&q=80"
+                src="/OKema/pic2.jpeg"
                 alt="Bosco Okema portrait holding traditional Adungu instrument"
                 className="w-full h-full object-cover"
               />
@@ -302,7 +296,7 @@ export default async function HomeFallback() {
           </div>
           <div className="relative aspect-video w-full max-w-5xl mx-auto overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600&q=80"
+              src="/OKema/IMG_4864.JPG"
               alt="Video thumbnail - Bosco Okema performing live"
               className="w-full h-full object-cover"
             />
