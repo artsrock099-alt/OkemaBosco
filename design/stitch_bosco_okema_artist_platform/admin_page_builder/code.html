@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin - Page Builder</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#5e402b",
+                    "surface-container-low": "#f7f3ea",
+                    "accent-orange": "#E24C11",
+                    "surface-bright": "#fdf9f0",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#cac6c2",
+                    "surface-container-high": "#ece8df",
+                    "tertiary-fixed": "#ffdead",
+                    "secondary-fixed": "#ffdcc6",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#2d1605",
+                    "on-secondary-container": "#795841",
+                    "surface-dim": "#dddad1",
+                    "surface-container-highest": "#e6e2d9",
+                    "on-surface": "#1c1c16",
+                    "deep-charcoal": "#171614",
+                    "secondary-container": "#fed1b4",
+                    "surface-container": "#f1eee5",
+                    "inverse-surface": "#31302b",
+                    "warm-ivory": "#F5F1E8",
+                    "on-tertiary-fixed": "#281900",
+                    "error": "#ba1a1a",
+                    "surface-variant": "#e6e2d9",
+                    "on-tertiary-fixed-variant": "#604100",
+                    "tertiary-container": "#281900",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#f4f0e7",
+                    "earth-brown": "#6B4B35",
+                    "inverse-primary": "#cac6c2",
+                    "on-tertiary-container": "#a87c2e",
+                    "on-surface-variant": "#494640",
+                    "tertiary-fixed-dim": "#f2be69",
+                    "secondary": "#795740",
+                    "muted-ochre": "#B88A3B",
+                    "primary-fixed": "#e6e2de",
+                    "on-primary-fixed-variant": "#484644",
+                    "surface": "#fdf9f0",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed": "#1c1b19",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#cbc6bd",
+                    "primary": "#000000",
+                    "background": "#fdf9f0",
+                    "surface-tint": "#605e5b",
+                    "paper-white": "#FFFFFF",
+                    "primary-container": "#1c1b19",
+                    "outline": "#7a776f",
+                    "secondary-fixed-dim": "#eabea2",
+                    "tertiary": "#000000",
+                    "on-background": "#1c1c16",
+                    "on-primary-container": "#868380"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "64px",
+                    "section-gap": "120px",
+                    "gutter": "24px",
+                    "unit": "8px",
+                    "margin-mobile": "20px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "display-lg": ["EB Garamond"],
+                    "headline-lg-mobile": ["EB Garamond"],
+                    "display-lg-mobile": ["EB Garamond"],
+                    "label-sm": ["DM Sans"],
+                    "headline-md": ["EB Garamond"],
+                    "headline-lg": ["EB Garamond"],
+                    "body-lg": ["DM Sans"],
+                    "body-md": ["DM Sans"]
+            },
+            "fontSize": {
+                    "display-lg": ["84px", {"lineHeight": "92px", "letterSpacing": "-0.02em", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                    "headline-lg": ["48px", {"lineHeight": "56px", "fontWeight": "400"}],
+                    "body-lg": ["20px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "26px", "fontWeight": "400"}]
+            }
+          },
+        }
+      }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'DM Sans', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-eb-garamond { font-family: 'EB Garamond', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface h-screen overflow-hidden flex">
+<!-- NavigationDrawer -->
+<nav class="fixed left-0 top-0 h-full w-[280px] bg-deep-charcoal shadow-[40px_0_40px_rgba(0,0,0,0.04)] flex flex-col py-8 px-4 z-40 hidden md:flex">
+<div class="mb-8 px-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a professional African man with warm lighting, wearing a simple dark shirt, against a soft, neutral studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHu_xbXRBU1VrwR8yFXWUNnx40y9cbC43BAYq7kZIq7gTR2ekHpUaY8fO_0WK6YqnR8dnBNAFpDz6BNzKREnwTyyTZR9cOYZIsw0IYEqR01ngllH5SCVK4h2SGdZ6V0DDsbaMM2U1MKg2gP0cJTKX_IrmaBGlTKRwsLaiS2rArBrYjK985e7aab1lXCIymcMZE3W7zAKmG46sKhBzW1O-tshRSIaUV88MeD0Mv_hKtfHNaYdmNMa7e0Q"/>
+</div>
+<div>
+<h2 class="font-display-lg text-headline-md text-warm-ivory leading-tight">Bosco Okema</h2>
+<p class="font-body-md text-body-md text-surface-variant opacity-70">Administrator</p>
+</div>
+</div>
+<ul class="flex-1 space-y-2">
+<li><a class="flex items-center gap-gutter px-4 py-3 text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all rounded-lg font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>Dashboard</a></li>
+<li><a class="flex items-center gap-gutter px-4 py-3 text-warm-ivory bg-on-secondary-fixed-variant rounded-lg hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="web">web</span>Pages</a></li>
+<li><a class="flex items-center gap-gutter px-4 py-3 text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all rounded-lg font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="event">event</span>Events</a></li>
+<li><a class="flex items-center gap-gutter px-4 py-3 text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all rounded-lg font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="school">school</span>Education</a></li>
+<li><a class="flex items-center gap-gutter px-4 py-3 text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all rounded-lg font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="library_music">library_music</span>Music</a></li>
+<li><a class="flex items-center gap-gutter px-4 py-3 text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all rounded-lg font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="perm_media">perm_media</span>Media</a></li>
+<li><a class="flex items-center gap-gutter px-4 py-3 text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all rounded-lg font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>Bookings</a></li>
+<li><a class="flex items-center gap-gutter px-4 py-3 text-surface-variant opacity-70 hover:bg-on-secondary-fixed-variant hover:opacity-100 transition-all rounded-lg font-body-md text-body-md" href="#"><span class="material-symbols-outlined" data-icon="settings">settings</span>Settings</a></li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-[280px] h-screen overflow-hidden bg-surface">
+<!-- TopAppBar (Small) -->
+<header class="docked top-0 right-0 w-full bg-surface-container dark:bg-surface-container-highest flex justify-end items-center h-16 px-gutter z-30 border-b border-earth-brown border-opacity-20 hidden md:flex">
+<div class="flex items-center gap-4 text-on-surface dark:text-warm-ivory">
+<span class="font-headline-md text-headline-md text-primary mr-auto pl-4">Admin Portal</span>
+<button class="hover:bg-surface-container-high transition-all p-2 rounded-full text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<!-- Builder Interface -->
+<main class="flex-1 flex overflow-hidden">
+<!-- Sections List Sidebar -->
+<aside class="w-1/3 max-w-[400px] bg-surface-container-low border-r border-earth-brown border-opacity-10 flex flex-col h-full overflow-y-auto">
+<div class="p-8 pb-4">
+<div class="flex items-center justify-between mb-8">
+<h1 class="font-display-lg text-headline-lg text-primary tracking-tight">PAGE: HOME</h1>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-4">Active Sections</p>
+</div>
+<div class="px-8 flex-1 space-y-4">
+<!-- Section: Hero (Active) -->
+<div class="group relative bg-surface border border-earth-brown border-opacity-20 rounded-lg p-4 cursor-pointer shadow-sm border-l-4 border-l-muted-ochre">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-muted-ochre cursor-grab active:cursor-grabbing">drag_indicator</span>
+<span class="font-body-md text-body-md font-medium text-primary">HERO</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="hover:text-primary p-1"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="hover:text-primary p-1"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+</div>
+</div>
+</div>
+<!-- Add Section Button -->
+<div class="relative flex items-center justify-center py-2 group">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-earth-brown border-opacity-20 group-hover:border-muted-ochre transition-colors"></div>
+</div>
+<button class="relative bg-surface border border-earth-brown border-opacity-20 rounded-full w-8 h-8 flex items-center justify-center text-on-surface-variant group-hover:border-muted-ochre group-hover:text-muted-ochre transition-all bg-surface">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<!-- Section: Introduction -->
+<div class="group relative bg-surface-bright border border-transparent hover:border-earth-brown hover:border-opacity-20 rounded-lg p-4 cursor-pointer transition-all">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-surface-tint cursor-grab active:cursor-grabbing">drag_indicator</span>
+<span class="font-body-md text-body-md text-on-surface-variant">INTRODUCTION</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="hover:text-primary p-1"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="hover:text-primary p-1"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+</div>
+</div>
+</div>
+<!-- Add Section Button -->
+<div class="relative flex items-center justify-center py-2 group">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-earth-brown border-opacity-20 group-hover:border-muted-ochre transition-colors"></div>
+</div>
+<button class="relative bg-surface border border-earth-brown border-opacity-20 rounded-full w-8 h-8 flex items-center justify-center text-on-surface-variant group-hover:border-muted-ochre group-hover:text-muted-ochre transition-all bg-surface">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<!-- Section: Featured Experiences -->
+<div class="group relative bg-surface-bright border border-transparent hover:border-earth-brown hover:border-opacity-20 rounded-lg p-4 cursor-pointer transition-all">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-surface-tint cursor-grab active:cursor-grabbing">drag_indicator</span>
+<span class="font-body-md text-body-md text-on-surface-variant">FEATURED EXPERIENCES</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="hover:text-primary p-1"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+<button class="hover:text-primary p-1"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Section Editor Panel -->
+<section class="flex-1 bg-surface-bright p-12 overflow-y-auto">
+<div class="max-w-3xl mx-auto">
+<div class="mb-12 flex items-center justify-between">
+<div>
+<h2 class="font-display-lg text-headline-md text-primary mb-2">Edit Hero Section</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Customize the main introductory area of your homepage.</p>
+</div>
+<button class="bg-deep-charcoal text-warm-ivory px-6 py-3 font-label-sm text-label-sm uppercase hover:bg-earth-brown transition-colors">
+                            Save Changes
+                        </button>
+</div>
+<div class="space-y-8">
+<!-- Heading Field -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-2">Heading</label>
+<textarea class="w-full bg-surface border border-earth-brown border-opacity-20 rounded-none p-4 font-display-lg text-headline-md text-primary focus:ring-1 focus:ring-muted-ochre focus:border-muted-ochre resize-none transition-all" rows="2">TRADITIONAL ARTISTRY MEETS MODERN SOUND</textarea>
+</div>
+<!-- Subheading Field -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-2">Subheading</label>
+<textarea class="w-full bg-surface border border-earth-brown border-opacity-20 rounded-none p-4 font-body-md text-body-md text-on-surface-variant focus:ring-1 focus:ring-muted-ochre focus:border-muted-ochre resize-none transition-all" rows="3">Experience the cultural richness of Ugandan music through immersive performances and storytelling.</textarea>
+</div>
+<!-- Button Link Field -->
+<div class="grid grid-cols-2 gap-6">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-2">Button Text</label>
+<input class="w-full bg-surface border border-earth-brown border-opacity-20 rounded-none p-4 font-body-md text-body-md text-primary focus:ring-1 focus:ring-muted-ochre focus:border-muted-ochre transition-all" type="text" value="EXPLORE EXPERIENCES"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-2">Button Link</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-4 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">link</span>
+</span>
+<input class="w-full bg-surface border border-earth-brown border-opacity-20 rounded-none p-4 pl-12 font-body-md text-body-md text-primary focus:ring-1 focus:ring-muted-ochre focus:border-muted-ochre transition-all" type="text" value="/experiences"/>
+</div>
+</div>
+</div>
+<!-- Media Selection -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-4">Background Media</label>
+<div class="grid grid-cols-3 gap-4">
+<div class="aspect-video relative rounded-lg overflow-hidden border-2 border-muted-ochre cursor-pointer">
+<div class="absolute inset-0 bg-black bg-opacity-20 z-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[32px]">check_circle</span>
+</div>
+<img class="w-full h-full object-cover" data-alt="A wide cinematic shot of an African musician performing on a wooden stage with warm, dramatic lighting illuminating the traditional instrument against a dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXmoL18Y1A8snoiKXOrQ2aaSGykhvkPBOpnZY6uzRBQ4gBCpFeF3wlS280oOkmIhaqBwowrd8gaPH7bZYNMGhoEyod6kGpyW0urILVS4QwvwWpqnKvAjT1SXMddcjSxRVbPwCIUuQ5_kKVTbKV7YT9At-bglHiznlPO-B-DS9O9RUmRGKAjOEPoCv0TBtnM4TON1dUVefhMeAYcl6zKF4tfAX7-QHRXrKeJUB6ifGiTbtsc_ntz_OapQ"/>
+</div>
+<div class="aspect-video relative rounded-lg overflow-hidden border border-earth-brown border-opacity-20 cursor-pointer hover:border-opacity-50 transition-colors">
+<img class="w-full h-full object-cover" data-alt="A close up of hands playing a traditional Ugandan stringed instrument, shallow depth of field, warm earth tones, editorial style photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbUtEz_82Kt4LDToUFpdUGpt9nKjN-Q6WTrtfRlgWKgvWvlIEXfZISqZHbpeXdlEqSRT1jeaVnTwzLyKU7ebPLfMA7S2eldyDbEvMwjdbEy_ZQksXsQD_tN9Rc2B3RoytJzZI7D2LzBn4RzqqYAa-L2BBrWGRhbvJ290hOQTGHhjoin6AJuGCrtQKETCZO231cX92NXn1BnWLWlAuPfm0MbIsnkLbS3BbJARtQflXvRddVZjjsQWTZEQ"/>
+</div>
+<div class="aspect-video relative rounded-lg bg-surface border border-dashed border-earth-brown border-opacity-30 cursor-pointer hover:border-opacity-100 transition-colors flex flex-col items-center justify-center text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-[32px] mb-2">add_photo_alternate</span>
+<span class="font-label-sm text-label-sm">UPLOAD NEW</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

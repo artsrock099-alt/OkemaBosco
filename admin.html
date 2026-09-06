@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Book Bosco Okema</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#5e402b",
+                        "surface-container-low": "#f7f3ea",
+                        "accent-orange": "#E24C11",
+                        "surface-bright": "#fdf9f0",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#cac6c2",
+                        "surface-container-high": "#ece8df",
+                        "tertiary-fixed": "#ffdead",
+                        "secondary-fixed": "#ffdcc6",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#2d1605",
+                        "on-secondary-container": "#795841",
+                        "surface-dim": "#dddad1",
+                        "surface-container-highest": "#e6e2d9",
+                        "on-surface": "#1c1c16",
+                        "deep-charcoal": "#171614",
+                        "secondary-container": "#fed1b4",
+                        "surface-container": "#f1eee5",
+                        "inverse-surface": "#31302b",
+                        "warm-ivory": "#F5F1E8",
+                        "on-tertiary-fixed": "#281900",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e6e2d9",
+                        "on-tertiary-fixed-variant": "#604100",
+                        "tertiary-container": "#281900",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f4f0e7",
+                        "earth-brown": "#6B4B35",
+                        "inverse-primary": "#cac6c2",
+                        "on-tertiary-container": "#a87c2e",
+                        "on-surface-variant": "#494640",
+                        "tertiary-fixed-dim": "#f2be69",
+                        "secondary": "#795740",
+                        "muted-ochre": "#B88A3B",
+                        "primary-fixed": "#e6e2de",
+                        "on-primary-fixed-variant": "#484644",
+                        "surface": "#fdf9f0",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#1c1b19",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#cbc6bd",
+                        "primary": "#000000",
+                        "background": "#fdf9f0",
+                        "surface-tint": "#605e5b",
+                        "paper-white": "#FFFFFF",
+                        "primary-container": "#1c1b19",
+                        "outline": "#7a776f",
+                        "secondary-fixed-dim": "#eabea2",
+                        "tertiary": "#000000",
+                        "on-background": "#1c1c16",
+                        "on-primary-container": "#868380"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "section-gap": "120px",
+                        "gutter": "24px",
+                        "unit": "8px",
+                        "margin-mobile": "20px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["EB Garamond", "serif"],
+                        "headline-lg-mobile": ["EB Garamond", "serif"],
+                        "display-lg-mobile": ["EB Garamond", "serif"],
+                        "label-sm": ["DM Sans", "sans-serif"],
+                        "headline-md": ["EB Garamond", "serif"],
+                        "headline-lg": ["EB Garamond", "serif"],
+                        "body-lg": ["DM Sans", "sans-serif"],
+                        "body-md": ["DM Sans", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["84px", { "lineHeight": "92px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "500" }],
+                        "headline-lg": ["48px", { "lineHeight": "56px", "fontWeight": "400" }],
+                        "body-lg": ["20px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&amp;family=EB+Garamond:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { background-color: #fdf9f0; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .form-radio:checked { background-color: #6B4B35; border-color: #6B4B35; }
+        .form-radio:focus { ring-color: #6B4B35; }
+        .input-border { border: 1px solid rgba(107, 75, 53, 0.2); }
+        .input-border:focus { border-color: #6B4B35; outline: none; box-shadow: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-deep-charcoal sticky w-full z-50 flat no shadows bg-transparent">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-unit w-full z-50">
+<div class="flex items-center cursor-pointer active:opacity-70">
+<span class="material-symbols-outlined text-primary dark:text-warm-ivory text-2xl" data-icon="menu">menu</span>
+</div>
+<a class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-primary dark:text-warm-ivory tracking-tighter" href="#">BOSCO OKEMA</a>
+<div class="cursor-pointer active:opacity-70">
+<span class="font-label-sm text-label-sm text-primary dark:text-warm-ivory border-b border-earth-brown uppercase">BOOK BOSCO</span>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center pt-20 pb-section-gap px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="text-center max-w-3xl mb-16 md:mb-24">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-6">BOOK BOSCO</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Bring an engaging musician and cultural educator to your next event. Fill out the details below to start the conversation.</p>
+</div>
+<!-- Booking Form Container -->
+<div class="w-full max-w-4xl relative">
+<!-- Progress Indicator -->
+<div class="flex items-center justify-between mb-12 relative">
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[1px] bg-outline-variant z-0"></div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-1/3 h-[2px] bg-earth-brown z-0 transition-all duration-500" id="progress-bar"></div>
+<div class="relative z-10 flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-earth-brown text-warm-ivory flex items-center justify-center font-label-sm text-label-sm border-2 border-surface shadow-sm">1</div>
+<span class="font-label-sm text-label-sm text-earth-brown uppercase hidden md:block absolute -bottom-6 whitespace-nowrap">Service</span>
+</div>
+<div class="relative z-10 flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm border-2 border-surface shadow-sm" id="step-2-indicator">2</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase hidden md:block absolute -bottom-6 whitespace-nowrap opacity-50" id="step-2-label">Details</span>
+</div>
+<div class="relative z-10 flex flex-col items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm border-2 border-surface shadow-sm">3</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase hidden md:block absolute -bottom-6 whitespace-nowrap opacity-50">Review</span>
+</div>
+</div>
+<!-- Form Content Wrapper -->
+<div class="bg-surface-container-low p-8 md:p-16 rounded-xl border border-outline-variant/30 relative overflow-hidden">
+<!-- Step 1: Service Selection -->
+<div class="transition-opacity duration-300 block" id="step-1">
+<h2 class="font-headline-md text-headline-md text-primary mb-8 border-b border-earth-brown/20 pb-4 inline-block">What would you like to book?</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Option 1 -->
+<label class="cursor-pointer group relative block h-full">
+<input class="peer sr-only" name="service_type" type="radio" value="live_performance"/>
+<div class="h-full p-6 bg-surface border input-border peer-checked:border-earth-brown peer-checked:bg-surface-bright transition-all duration-300 relative overflow-hidden flex flex-col gap-4 group-hover:border-earth-brown/50">
+<div class="absolute top-4 right-4 w-5 h-5 rounded-full border border-earth-brown flex items-center justify-center peer-checked:bg-earth-brown">
+<div class="w-2 h-2 rounded-full bg-warm-ivory opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<span class="material-symbols-outlined text-4xl text-muted-ochre" data-icon="stadium">stadium</span>
+<div>
+<h3 class="font-body-lg text-body-lg text-primary mb-2">Live Performance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Full band or solo acoustic sets for festivals, venues, and private events.</p>
+</div>
+</div>
+</label>
+<!-- Option 2 -->
+<label class="cursor-pointer group relative block h-full">
+<input class="peer sr-only" name="service_type" type="radio" value="school_residency"/>
+<div class="h-full p-6 bg-surface border input-border peer-checked:border-earth-brown peer-checked:bg-surface-bright transition-all duration-300 relative overflow-hidden flex flex-col gap-4 group-hover:border-earth-brown/50">
+<div class="absolute top-4 right-4 w-5 h-5 rounded-full border border-earth-brown flex items-center justify-center peer-checked:bg-earth-brown">
+<div class="w-2 h-2 rounded-full bg-warm-ivory opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<span class="material-symbols-outlined text-4xl text-muted-ochre" data-icon="school">school</span>
+<div>
+<h3 class="font-body-lg text-body-lg text-primary mb-2">School Residency</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Educational workshops focusing on Ugandan musical heritage and storytelling.</p>
+</div>
+</div>
+</label>
+<!-- Option 3 -->
+<label class="cursor-pointer group relative block h-full">
+<input class="peer sr-only" name="service_type" type="radio" value="elderly_visit"/>
+<div class="h-full p-6 bg-surface border input-border peer-checked:border-earth-brown peer-checked:bg-surface-bright transition-all duration-300 relative overflow-hidden flex flex-col gap-4 group-hover:border-earth-brown/50">
+<div class="absolute top-4 right-4 w-5 h-5 rounded-full border border-earth-brown flex items-center justify-center peer-checked:bg-earth-brown">
+<div class="w-2 h-2 rounded-full bg-warm-ivory opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<span class="material-symbols-outlined text-4xl text-muted-ochre" data-icon="volunteer_activism">volunteer_activism</span>
+<div>
+<h3 class="font-body-lg text-body-lg text-primary mb-2">Community / Elderly Visit</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Intimate, therapeutic musical sessions designed for care homes and community centers.</p>
+</div>
+</div>
+</label>
+<!-- Option 4 -->
+<label class="cursor-pointer group relative block h-full">
+<input class="peer sr-only" name="service_type" type="radio" value="other"/>
+<div class="h-full p-6 bg-surface border input-border peer-checked:border-earth-brown peer-checked:bg-surface-bright transition-all duration-300 relative overflow-hidden flex flex-col gap-4 group-hover:border-earth-brown/50">
+<div class="absolute top-4 right-4 w-5 h-5 rounded-full border border-earth-brown flex items-center justify-center peer-checked:bg-earth-brown">
+<div class="w-2 h-2 rounded-full bg-warm-ivory opacity-0 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+<span class="material-symbols-outlined text-4xl text-muted-ochre" data-icon="more_horiz">more_horiz</span>
+<div>
+<h3 class="font-body-lg text-body-lg text-primary mb-2">Other Inquiry</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Press, collaborations, or unique event proposals not listed above.</p>
+</div>
+</div>
+</label>
+</div>
+<div class="mt-12 flex justify-end">
+<button class="bg-deep-charcoal text-warm-ivory px-8 py-4 font-label-sm text-label-sm tracking-[0.1em] uppercase hover:bg-earth-brown transition-colors duration-300 flex items-center gap-2" onclick="goToStep2()" type="button">
+                            Next Step
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Step 2: Event Details (Hidden initially) -->
+<div class="hidden transition-opacity duration-300" id="step-2">
+<h2 class="font-headline-md text-headline-md text-primary mb-8 border-b border-earth-brown/20 pb-4 inline-block">Event Details</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Date -->
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Proposed Date</label>
+<div class="relative">
+<input class="w-full bg-surface input-border p-4 font-body-md text-body-md text-primary focus:ring-0" type="date"/>
+</div>
+</div>
+<!-- Audience Size -->
+<div class="flex flex-col gap-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Expected Audience Size</label>
+<select class="w-full bg-surface input-border p-4 font-body-md text-body-md text-primary focus:ring-0 appearance-none">
+<option disabled="" selected="" value="">Select size</option>
+<option value="small">Intimate (Under 50)</option>
+<option value="medium">Medium (50 - 200)</option>
+<option value="large">Large (200 - 500)</option>
+<option value="festival">Festival (500+)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-[40px] text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+<!-- Venue Name -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Venue Name / Location</label>
+<input class="w-full bg-surface input-border p-4 font-body-md text-body-md text-primary focus:ring-0 placeholder:text-outline-variant" placeholder="e.g. The Grand Hall, London" type="text"/>
+</div>
+<!-- Additional Notes -->
+<div class="flex flex-col gap-2 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Brief Description of Event</label>
+<textarea class="w-full bg-surface input-border p-4 font-body-md text-body-md text-primary focus:ring-0 placeholder:text-outline-variant resize-none" placeholder="Tell us a bit more about the vibe, the purpose, and what you're looking for..." rows="4"></textarea>
+</div>
+</div>
+<div class="mt-12 flex justify-between items-center">
+<button class="text-on-surface-variant hover:text-earth-brown font-label-sm text-label-sm uppercase tracking-wider transition-colors duration-300 flex items-center gap-2" onclick="goToStep1()" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+                            Back
+                        </button>
+<button class="bg-deep-charcoal text-warm-ivory px-8 py-4 font-label-sm text-label-sm tracking-[0.1em] uppercase hover:bg-earth-brown transition-colors duration-300 flex items-center gap-2" type="button">
+                            Continue
+                            <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface dark:bg-deep-charcoal full-width bottom-0 border-t border-earth-brown border-opacity-20 flat no shadows">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-mobile md:px-margin-desktop py-section-gap w-full">
+<div class="mb-8 md:mb-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant uppercase">© 2024 BOSCO OKEMA. ALL RIGHTS RESERVED.</span>
+</div>
+<div class="flex gap-gutter items-center">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-earth-brown transition-colors uppercase" href="#">INSTAGRAM</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-earth-brown transition-colors uppercase" href="#">SPOTIFY</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-earth-brown transition-colors uppercase" href="#">YOUTUBE</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-surface-variant hover:text-earth-brown transition-colors uppercase" href="#">PRESS KIT</a>
+</div>
+</div>
+</footer>
+<script>
+        function goToStep2() {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+            
+            // Update progress bar
+            document.getElementById('progress-bar').style.width = '66%';
+            
+            // Update Step 2 Indicator
+            const step2Ind = document.getElementById('step-2-indicator');
+            step2Ind.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+            step2Ind.classList.add('bg-earth-brown', 'text-warm-ivory');
+            
+            document.getElementById('step-2-label').classList.remove('opacity-50');
+            document.getElementById('step-2-label').classList.add('text-earth-brown');
+        }
+
+        function goToStep1() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+            
+            // Update progress bar
+            document.getElementById('progress-bar').style.width = '33%';
+            
+            // Update Step 2 Indicator
+            const step2Ind = document.getElementById('step-2-indicator');
+            step2Ind.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+            step2Ind.classList.remove('bg-earth-brown', 'text-warm-ivory');
+            
+            document.getElementById('step-2-label').classList.add('opacity-50');
+            document.getElementById('step-2-label').classList.remove('text-earth-brown');
+        }
+    </script>
+</body></html>

@@ -1,0 +1,691 @@
+// Prisma schema for Bosco Okema Artist Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// AUTH & USER MANAGEMENT
+// ==========================================
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  BOOKING_MANAGER
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String   @unique
+  emailVerified DateTime?
+  password      String
+  role          Role     @default(EDITOR)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  bookings      Booking[]
+  bookingNotes  BookingNote[]
+  articles      Article[]       @relation("AuthorArticles")
+  auditLogs     AuditLog[]
+  sessions      Session[]
+  accounts      Account[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ==========================================
+// PAGES & PAGE BUILDER
+// ==========================================
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+model Page {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  description String?
+  status      PageStatus    @default(DRAFT)
+  publishDate DateTime?
+  isHomepage  Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  sections    PageSection[]
+  seo         SeoMetadata?
+}
+
+enum SectionType {
+  HERO
+  RICH_TEXT
+  IMAGE
+  IMAGE_TEXT
+  VIDEO
+  AUDIO
+  GALLERY
+  EVENTS
+  MUSIC
+  TESTIMONIALS
+  QUOTE
+  CTA
+  BUTTONS
+  FAQ
+  NEWSLETTER
+  CONTACT_FORM
+  BOOKING_FORM
+  SOCIAL_LINKS
+  EMBED
+  SERVICES
+  INSTRUMENTS
+  FEATURED_VIDEO
+}
+
+model PageSection {
+  id        String      @id @default(cuid())
+  pageId    String
+  type      SectionType
+  order     Int         @default(0)
+  isVisible Boolean     @default(true)
+  content   Json        @default("{}")
+  settings  Json        @default("{}")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  page      Page        @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+// ==========================================
+// NAVIGATION
+// ==========================================
+
+model Navigation {
+  id        String           @id @default(cuid())
+  name      String           @unique
+  location  String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  items     NavigationItem[]
+}
+
+model NavigationItem {
+  id            String           @id @default(cuid())
+  navigationId  String
+  label         String
+  url           String
+  isExternal    Boolean          @default(false)
+  order         Int              @default(0)
+  isVisible     Boolean          @default(true)
+  parentId      String?
+  parent        NavigationItem?  @relation("ParentChildren", fields: [parentId], references: [id])
+  children      NavigationItem[] @relation("ParentChildren")
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  navigation    Navigation       @relation(fields: [navigationId], references: [id], onDelete: Cascade)
+}
+
+// ==========================================
+// MEDIA LIBRARY
+// ==========================================
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+}
+
+model MediaFolder {
+  id        String   @id @default(cuid())
+  name      String
+  parentId  String?
+  parent    MediaFolder?  @relation("FolderParent", fields: [parentId], references: [id])
+  children  MediaFolder[] @relation("FolderParent")
+  media     Media[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id          String       @id @default(cuid())
+  type        MediaType
+  title       String
+  filename    String
+  url         String
+  mimeType    String
+  size        Int
+  width       Int?
+  height      Int?
+  duration    Int?
+  altText     String?
+  caption     String?
+  description String?
+  credit      String?
+  folderId    String?
+  folder      MediaFolder?      @relation(fields: [folderId], references: [id])
+  metadata    Json              @default("{}")
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Back-relations for models referencing this Media
+  events                 Event[]            @relation("EventImage")
+  programHeroImages      EducationProgram[] @relation("ProgramHeroImage")
+  albumCovers            Album[]            @relation("AlbumCover")
+  musicArtwork           Music[]            @relation("MusicArtwork")
+  musicAudio             Music[]            @relation("MusicAudio")
+  articleFeaturedImages  Article[]          @relation("ArticleFeaturedImage")
+  pressImages            Press[]            @relation("PressImage")
+  instrumentImages       Instrument[]       @relation("InstrumentImage")
+  testimonialImages      Testimonial[]      @relation("TestimonialImage")
+  seoSocialImages        SeoMetadata[]      @relation("SeoSocialImage")
+  siteDefaultHeroImages  SiteSettings[]     @relation("DefaultHero")
+  siteLogoImages         SiteSettings[]     @relation("LogoImage")
+  siteFavicons           SiteSettings[]     @relation("Favicon")
+}
+
+// ==========================================
+// EVENTS
+// ==========================================
+
+model EventCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  events    Event[]
+}
+
+model Event {
+  id                String        @id @default(cuid())
+  title             String
+  slug              String        @unique
+  categoryId        String?
+  category          EventCategory? @relation(fields: [categoryId], references: [id])
+  startDate         DateTime
+  endDate           DateTime?
+  time              String?
+  venue             String?
+  location          String?
+  mapUrl            String?
+  description       String?       @db.Text
+  shortDescription  String?
+  imageId           String?
+  image             Media?        @relation("EventImage", fields: [imageId], references: [id])
+  galleryIds        String[]
+  videoUrl          String?
+  ticketUrl         String?
+  registrationUrl   String?
+  isPublished       Boolean       @default(false)
+  isFeatured        Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  seo               SeoMetadata?
+}
+
+// ==========================================
+// EDUCATION PROGRAMS
+// ==========================================
+
+enum ProgramType {
+  SCHOOL_RESIDENCY
+  ELDERLY_VISIT
+  LIVE_PERFORMANCE
+  OTHER
+}
+
+model EducationProgram {
+  id                String       @id @default(cuid())
+  type              ProgramType
+  title             String
+  slug              String       @unique
+  heroImageId       String?
+  heroImage         Media?       @relation("ProgramHeroImage", fields: [heroImageId], references: [id])
+  shortDescription  String?
+  content           String?      @db.Text
+  features          Json         @default("[]")
+  formats           Json         @default("[]")
+  galleryIds        String[]
+  ctaText           String?
+  ctaUrl            String?
+  isPublished       Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  seo               SeoMetadata?
+}
+
+// ==========================================
+// MUSIC
+// ==========================================
+
+model Album {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  coverId   String?
+  cover     Media?   @relation("AlbumCover", fields: [coverId], references: [id])
+  year      Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  music     Music[]
+}
+
+model MusicPlatform {
+  id    String @id @default(cuid())
+  name  String
+  icon  String
+  color String?
+}
+
+model Music {
+  id           String        @id @default(cuid())
+  title        String
+  slug         String        @unique
+  albumId      String?
+  album        Album?        @relation(fields: [albumId], references: [id])
+  artworkId    String?
+  artwork      Media?        @relation("MusicArtwork", fields: [artworkId], references: [id])
+  audioId      String?
+  audio        Media?        @relation("MusicAudio", fields: [audioId], references: [id])
+  year         Int?
+  duration     Int?
+  description  String?
+  status       PageStatus    @default(PUBLISHED)
+  order        Int           @default(0)
+  isFeatured   Boolean       @default(false)
+  isLive       Boolean       @default(false)
+  platformUrls Json          @default("{}")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// ==========================================
+// ARTICLES / BLOG
+// ==========================================
+
+model ArticleCategory {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[]
+}
+
+model ArticleTag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  articles  Article[] @relation("ArticleTags")
+}
+
+model Article {
+  id              String            @id @default(cuid())
+  title           String
+  slug            String            @unique
+  excerpt         String?
+  content         String?           @db.Text
+  categoryId      String?
+  category        ArticleCategory?  @relation(fields: [categoryId], references: [id])
+  tags            ArticleTag[]      @relation("ArticleTags")
+  featuredImageId String?
+  featuredImage   Media?            @relation("ArticleFeaturedImage", fields: [featuredImageId], references: [id])
+  authorId        String?
+  author          User?             @relation("AuthorArticles", fields: [authorId], references: [id])
+  status          PageStatus        @default(DRAFT)
+  publishDate     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  seo             SeoMetadata?
+}
+
+// ==========================================
+// PRESS
+// ==========================================
+
+model Press {
+  id          String   @id @default(cuid())
+  publication String
+  title       String
+  date        DateTime
+  imageId     String?
+  image       Media?   @relation("PressImage", fields: [imageId], references: [id])
+  url         String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// TESTIMONIALS
+// ==========================================
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String   @db.Text
+  name      String
+  organization String?
+  role      String?
+  imageId   String?
+  image     Media?   @relation("TestimonialImage", fields: [imageId], references: [id])
+  order     Int      @default(0)
+  isFeatured Boolean @default(false)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// BOOKINGS
+// ==========================================
+
+enum BookingStatus {
+  NEW
+  REVIEWING
+  QUOTED
+  CONFIRMED
+  DEPOSIT_PAID
+  FULLY_PAID
+  COMPLETED
+  CANCELLED
+}
+
+enum BookingType {
+  LIVE_PERFORMANCE
+  SCHOOL_RESIDENCY
+  ELDERLY_VISIT
+  CULTURAL_PRESENTATION
+  WORKSHOP
+  FESTIVAL
+  PRIVATE_EVENT
+  OTHER
+}
+
+model Booking {
+  id               String         @id @default(cuid())
+  reference        String         @unique
+  type             BookingType
+  status           BookingStatus  @default(NEW)
+  eventDate        DateTime
+  alternativeDate  DateTime?
+  venue            String?
+  location         String?
+  expectedAudience String?
+  eventDescription String?        @db.Text
+  budget           Decimal?       @db.Decimal(12, 2)
+  customerName     String
+  organization     String?
+  customerEmail    String
+  customerPhone    String?
+  additionalInfo   String?        @db.Text
+  assignedToId     String?
+  assignedTo       User?          @relation(fields: [assignedToId], references: [id])
+  notes            BookingNote[]
+  payments         Payment[]
+  invoices         Invoice[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model BookingNote {
+  id        String   @id @default(cuid())
+  bookingId String
+  content   String   @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  isInternal Boolean  @default(true)
+  createdAt DateTime @default(now())
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+// ==========================================
+// PAYMENTS & INVOICES
+// ==========================================
+
+enum PaymentStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  FAILED
+  REFUNDED
+  CANCELLED
+}
+
+enum PaymentType {
+  DEPOSIT
+  FULL_PAYMENT
+  INSTALLMENT
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  bookingId   String
+  amount      Decimal       @db.Decimal(12, 2)
+  currency    String        @default("UGX")
+  type        PaymentType
+  status      PaymentStatus @default(PENDING)
+  provider    String?
+  transactionRef String?
+  paidAt      DateTime?
+  metadata    Json          @default("{}")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  invoices    Invoice[]     @relation("InvoicePayments")
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  number      String        @unique
+  bookingId   String
+  status      PaymentStatus @default(PENDING)
+  amount      Decimal       @db.Decimal(12, 2)
+  dueDate     DateTime?
+  issuedAt    DateTime?
+  paidAt      DateTime?
+  items       Json          @default("[]")
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  payments    Payment[]     @relation("InvoicePayments")
+}
+
+// ==========================================
+// NEWSLETTER
+// ==========================================
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENT
+  FAILED
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  firstName    String?
+  lastName     String?
+  isActive     Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+  unsubscribedAt DateTime?
+}
+
+model NewsletterCampaign {
+  id           String         @id @default(cuid())
+  subject      String
+  previewText  String?
+  content      String?        @db.Text
+  status       CampaignStatus @default(DRAFT)
+  scheduledAt  DateTime?
+  sentAt       DateTime?
+  totalSent    Int            @default(0)
+  totalOpened  Int            @default(0)
+  totalClicked Int            @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+// ==========================================
+// CONTACT MESSAGES
+// ==========================================
+
+model ContactMessage {
+  id           String   @id @default(cuid())
+  name         String
+  organization String?
+  email        String
+  phone        String?
+  subject      String
+  message      String   @db.Text
+  isRead       Boolean  @default(false)
+  repliedAt    DateTime?
+  createdAt    DateTime @default(now())
+}
+
+// ==========================================
+// INSTRUMENTS / SOUNDS OF UGANDA
+// ==========================================
+
+model Instrument {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  imageId     String?
+  image       Media?   @relation("InstrumentImage", fields: [imageId], references: [id])
+  description String?  @db.Text
+  order       Int      @default(0)
+  isVisible   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ==========================================
+// SOCIAL LINKS
+// ==========================================
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String
+  url       String
+  label     String?
+  icon      String
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// SITE SETTINGS & SEO
+// ==========================================
+
+model SeoMetadata {
+  id               String   @id @default(cuid())
+  seoTitle         String?
+  seoDescription   String?
+  canonicalUrl     String?
+  ogTitle          String?
+  ogDescription    String?
+  socialImageId    String?
+  socialImage      Media?   @relation("SeoSocialImage", fields: [socialImageId], references: [id])
+  noIndex          Boolean  @default(false)
+  noFollow         Boolean  @default(false)
+  keywords         String[]
+  pageId           String?   @unique
+  page             Page?    @relation(fields: [pageId], references: [id])
+  eventId          String?   @unique
+  event            Event?   @relation(fields: [eventId], references: [id])
+  articleId        String?   @unique
+  article          Article? @relation(fields: [articleId], references: [id])
+  programId        String?   @unique
+  program          EducationProgram? @relation(fields: [programId], references: [id])
+  structuredData   Json     @default("{}")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model SiteSettings {
+  id                    String   @id @default(cuid())
+  siteName              String   @default("Bosco Okema")
+  tagline               String?
+  contactEmail          String?
+  contactPhone          String?
+  contactLocation       String?
+  footerText            String?
+  copyrightText         String
+  privacyPolicyUrl      String?
+  termsUrl              String?
+  newsletterEnabled     Boolean  @default(true)
+  footerVisible         Boolean  @default(true)
+  seo                   Json     @default("{}")
+  defaultHeroImageId    String?
+  defaultHeroImage      Media?   @relation("DefaultHero", fields: [defaultHeroImageId], references: [id])
+  logoImageId           String?
+  logoImage             Media?   @relation("LogoImage", fields: [logoImageId], references: [id])
+  faviconId             String?
+  favicon               Media?   @relation("Favicon", fields: [faviconId], references: [id])
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+// ==========================================
+// AUDIT LOG
+// ==========================================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  action     String
+  entity     String
+  entityId   String?
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  metadata   Json     @default("{}")
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+}
