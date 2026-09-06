@@ -48,8 +48,9 @@ const defaultFallbackNav: NavItem[] = [
     children: [
       { id: '5a', label: 'Photos', url: '/media/photos', isExternal: false, children: [] },
       { id: '5b', label: 'Videos', url: '/media/videos', isExternal: false, children: [] },
-      { id: '5c', label: 'Press', url: '/media/press', isExternal: false, children: [] },
-      { id: '5d', label: 'Articles', url: '/media/articles', isExternal: false, children: [] },
+      { id: '5c', label: 'Instrument Gallery', url: '/media/instruments', isExternal: false, children: [] },
+      { id: '5d', label: 'Press', url: '/media/press', isExternal: false, children: [] },
+      { id: '5e', label: 'Articles', url: '/media/articles', isExternal: false, children: [] },
     ],
   },
   { id: '6', label: 'About', url: '/about', isExternal: false, children: [] },

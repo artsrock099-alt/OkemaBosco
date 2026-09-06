@@ -50,7 +50,7 @@ body {
   }
 
   .nav-link {
-    @apply font-label text-label-sm text-on-surface-variant hover:text-muted-ochre transition-colors duration-300 uppercase tracking-widest relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-px after:bg-muted-ochre hover:after:w-full after:transition-all after:duration-300;
+    @apply font-label text-label-sm text-gold hover:text-muted-ochre transition-colors duration-300 uppercase tracking-widest relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-px after:bg-gold hover:after:w-full after:transition-all after:duration-300;
   }
 
   .btn-primary {
@@ -89,6 +89,26 @@ body {
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  /* Instrument gallery "pop" reveal */
+  .pop-in {
+    animation: popIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes popIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.82);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 

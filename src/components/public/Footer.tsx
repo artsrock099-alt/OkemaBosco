@@ -41,6 +41,7 @@ const defaultServices = [
   ['Live Performance', '/live-performance'],
   ['School Residency', '/education/school-residency'],
   ['Elderly Visits', '/education/elderly-visits'],
+  ['Instrument Gallery', '/media/instruments'],
   ['Book Bosco', '/book'],
 ];
 

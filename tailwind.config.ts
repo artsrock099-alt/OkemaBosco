@@ -48,6 +48,7 @@ const config: Config = {
         'deep-charcoal': '#171614',
         'earth-brown': '#6B4B35',
         'muted-ochre': '#B88A3B',
+        'gold': '#D4AF37',
         'paper-white': '#FFFFFF',
         'accent-orange': '#E24C11',
       },
