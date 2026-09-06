@@ -3,24 +3,24 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-type Slide = { src: string; orientation: 'portrait' | 'landscape' };
+type Slide = { src: string };
 
 const slides: Slide[] = [
-  { src: '/OKema/pic5.png', orientation: 'portrait' },
-  { src: '/OKema/pic6.png', orientation: 'landscape' },
-  { src: '/OKema/pic7.png', orientation: 'portrait' },
-  { src: '/OKema/pic8.png', orientation: 'portrait' },
-  { src: '/OKema/pic9.png', orientation: 'landscape' },
-  { src: '/OKema/pic10.png', orientation: 'landscape' },
-  { src: '/OKema/pic11.png', orientation: 'portrait' },
+  { src: '/OKema/pic5.png' },
+  { src: '/OKema/pic6.png' },
+  { src: '/OKema/pic7.png' },
+  { src: '/OKema/pic8.png' },
+  { src: '/OKema/pic9.png' },
+  { src: '/OKema/pic10.png' },
+  { src: '/OKema/pic11.png' },
 ];
 
 /**
  * Carousel of Bosco's handmade instruments. One instrument is shown at a time
  * on a black stage and "pops" in (scale + fade with a springy ease) as it
  * becomes active — inspired by samuelnalangira.com/media/instrument-gallery.
- * The stage adapts its shape to each photo's orientation so the instrument is
- * always large, never cropped awkwardly.
+ * The stage is tall and shows the full photo (object-contain) so no part of
+ * an instrument is ever cropped.
  */
 export default function InstrumentGallery() {
   const total = slides.length;
@@ -37,8 +37,6 @@ export default function InstrumentGallery() {
     const t = setInterval(() => setIndex((i) => (i + 1) % total), 4500);
     return () => clearInterval(t);
   }, [paused, total]);
-
-  const active = slides[index];
 
   return (
     <section
@@ -60,21 +58,15 @@ export default function InstrumentGallery() {
           </p>
         </div>
 
-        {/* STAGE — one instrument at a time */}
-        <div
-          className={`relative w-full max-w-4xl mx-auto overflow-hidden rounded-2xl bg-black select-none transition-[aspect-ratio] duration-700 ${
-            active.orientation === 'portrait'
-              ? 'aspect-[3/4] max-h-[74vh]'
-              : 'aspect-[4/3] max-h-[70vh]'
-          }`}
-        >
+        {/* STAGE — one full instrument at a time */}
+        <div className="relative w-full max-w-4xl mx-auto h-[68vh] sm:h-[76vh] md:h-[82vh] overflow-hidden rounded-2xl bg-black select-none">
           {slides.map((slide, i) => (
             <img
               key={slide.src}
               src={slide.src}
               alt={`Traditional instrument ${i + 1} of ${total}`}
               draggable={false}
-              className={`absolute inset-0 w-full h-full object-cover contrast-105 transition-all duration-700 ${
+              className={`absolute inset-0 w-full h-full object-contain p-3 md:p-8 contrast-105 transition-all duration-700 ${
                 i === index
                   ? 'opacity-100 scale-100'
                   : 'opacity-0 scale-90 pointer-events-none'

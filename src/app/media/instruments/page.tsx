@@ -41,21 +41,16 @@ export default function InstrumentsPage() {
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               THE MUSIC IN MOTION
             </div>
-            <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight mb-4">
-              Watch Bosco play.
-            </h2>
-            <p className="font-body text-body-md text-on-surface-variant max-w-2xl mx-auto">
-              Hear the instruments come alive in a live performance.
-            </p>
           </div>
 
           <div className="relative aspect-video w-full max-w-5xl mx-auto overflow-hidden rounded-xl bg-deep-charcoal shadow-2xl">
             <video
               className="w-full h-full object-contain"
+              autoPlay
+              muted
+              loop
               controls
               playsInline
-              preload="metadata"
-              poster="/OKema/IMG_4864.JPG"
             >
               <source src="/OKema/video.mp4" type="video/mp4" />
               Your browser does not support the video tag.
