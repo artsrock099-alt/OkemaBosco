@@ -1,47 +1,53 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const instruments = [
-  '/OKema/pic5.png',
-  '/OKema/pic6.png',
-  '/OKema/pic7.png',
-  '/OKema/pic8.png',
-  '/OKema/pic9.png',
-  '/OKema/pic10.png',
-  '/OKema/pic11.png',
+type Slide = { src: string; orientation: 'portrait' | 'landscape' };
+
+const slides: Slide[] = [
+  { src: '/OKema/pic5.png', orientation: 'portrait' },
+  { src: '/OKema/pic6.png', orientation: 'landscape' },
+  { src: '/OKema/pic7.png', orientation: 'portrait' },
+  { src: '/OKema/pic8.png', orientation: 'portrait' },
+  { src: '/OKema/pic9.png', orientation: 'landscape' },
+  { src: '/OKema/pic10.png', orientation: 'landscape' },
+  { src: '/OKema/pic11.png', orientation: 'portrait' },
 ];
 
 /**
- * Gallery of Bosco's handmade instruments. As each tile scrolls into view it
- * "pops" in (scale + fade, staggered) — see the .pop-in keyframes in globals.css.
+ * Carousel of Bosco's handmade instruments. One instrument is shown at a time
+ * on a black stage and "pops" in (scale + fade with a springy ease) as it
+ * becomes active — inspired by samuelnalangira.com/media/instrument-gallery.
+ * The stage adapts its shape to each photo's orientation so the instrument is
+ * always large, never cropped awkwardly.
  */
 export default function InstrumentGallery() {
+  const total = slides.length;
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const go = useCallback(
+    (dir: number) => setIndex((i) => (i + dir + total) % total),
+    [total]
+  );
+
   useEffect(() => {
-    const tiles = Array.from(document.querySelectorAll<HTMLElement>('.pop-tile'));
-    if (!('IntersectionObserver' in window)) {
-      tiles.forEach((el) => el.classList.add('pop-in'));
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('pop-in');
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
-    );
-    tiles.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
+    if (paused) return;
+    const t = setInterval(() => setIndex((i) => (i + 1) % total), 4500);
+    return () => clearInterval(t);
+  }, [paused, total]);
+
+  const active = slides[index];
 
   return (
-    <section className="bg-deep-charcoal text-warm-ivory overflow-hidden">
+    <section
+      className="bg-deep-charcoal text-warm-ivory overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
       <div className="container-x py-14 md:py-20">
-        <div className="text-center mb-10 md:mb-14 max-w-2xl mx-auto">
+        <div className="text-center mb-10 md:mb-12 max-w-2xl mx-auto">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-3">
             THE INSTRUMENTS
           </div>
@@ -49,30 +55,67 @@ export default function InstrumentGallery() {
             Handmade tools of sound
           </h2>
           <p className="font-body text-body-md text-surface-variant mt-4">
-            Each instrument is crafted by hand from wood, gourds and animal skins — keep
-            scrolling and watch the collection pop to life.
+            Each instrument is crafted by hand from wood, gourds and animal skins — watch them
+            pop to life, one at a time.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {instruments.map((src, i) => (
-            <figure
-              key={src}
-              className={`pop-tile opacity-0 scale-75 group relative aspect-square overflow-hidden rounded-xl bg-black ${
-                i === 6 ? 'col-span-2 md:col-span-1' : ''
+        {/* STAGE — one instrument at a time */}
+        <div
+          className={`relative w-full max-w-4xl mx-auto overflow-hidden rounded-2xl bg-black select-none transition-[aspect-ratio] duration-700 ${
+            active.orientation === 'portrait'
+              ? 'aspect-[3/4] max-h-[74vh]'
+              : 'aspect-[4/3] max-h-[70vh]'
+          }`}
+        >
+          {slides.map((slide, i) => (
+            <img
+              key={slide.src}
+              src={slide.src}
+              alt={`Traditional instrument ${i + 1} of ${total}`}
+              draggable={false}
+              className={`absolute inset-0 w-full h-full object-cover contrast-105 transition-all duration-700 ${
+                i === index
+                  ? 'opacity-100 scale-100'
+                  : 'opacity-0 scale-90 pointer-events-none'
               }`}
-              style={{ animationDelay: `${(i % 4) * 90}ms` }}
-            >
-              <img
-                src={src}
-                alt={`Traditional instrument ${i + 1} of ${instruments.length}`}
-                className="w-full h-full object-cover contrast-105 transition-all duration-700 group-hover:scale-105"
-              />
-              <figcaption className="absolute top-3 left-3 font-label text-label-sm text-warm-ivory/70 uppercase tracking-widest">
-                {String(i + 1).padStart(2, '0')}
-              </figcaption>
-              <div className="absolute inset-0 ring-1 ring-inset ring-warm-ivory/0 group-hover:ring-warm-ivory/20 transition-all duration-500 rounded-xl" />
-            </figure>
+              style={{ transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)' }}
+            />
+          ))}
+
+          {/* ARROWS */}
+          <button
+            type="button"
+            aria-label="Previous instrument"
+            onClick={() => go(-1)}
+            className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 md:w-14 md:h-14 rounded-full border border-warm-ivory/30 text-warm-ivory bg-deep-charcoal/30 backdrop-blur-sm flex items-center justify-center hover:bg-muted-ochre hover:border-muted-ochre hover:text-white transition-colors"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          <button
+            type="button"
+            aria-label="Next instrument"
+            onClick={() => go(1)}
+            className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 md:w-14 md:h-14 rounded-full border border-warm-ivory/30 text-warm-ivory bg-deep-charcoal/30 backdrop-blur-sm flex items-center justify-center hover:bg-muted-ochre hover:border-muted-ochre hover:text-white transition-colors"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* DOTS */}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {slides.map((slide, i) => (
+            <button
+              key={slide.src}
+              type="button"
+              aria-label={`Go to instrument ${i + 1}`}
+              onClick={() => setIndex(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                i === index
+                  ? 'w-8 bg-muted-ochre'
+                  : 'w-2 bg-surface-variant/40 hover:bg-surface-variant/70'
+              }`}
+            />
           ))}
         </div>
       </div>

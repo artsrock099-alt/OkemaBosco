@@ -79,15 +79,15 @@ export default async function ArticlesPage() {
 
   return (
     <>
-      <section className="pt-32 pb-12 md:pt-40 md:pb-20 bg-surface-container">
+      <section className="pt-32 pb-12 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory">
         <div className="container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
             MEDIA • ARTICLES
           </div>
-          <h1 className="font-display text-display-lg-mobile md:text-display-lg text-on-surface tracking-tight leading-tight mb-6">
+          <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             Articles & Stories
           </h1>
-          <p className="font-body text-body-md md:text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+          <p className="font-body text-body-md md:text-body-lg text-surface-variant max-w-2xl mx-auto">
             Writing on music, culture, education, and the journey behind the performances.
           </p>
         </div>
@@ -97,6 +97,7 @@ export default async function ArticlesPage() {
           {[
             { slug: 'photos', label: 'Photos', href: '/media/photos' },
             { slug: 'videos', label: 'Videos', href: '/media/videos' },
+            { slug: 'instruments', label: 'Instrument Gallery', href: '/media/instruments' },
             { slug: 'press', label: 'Press', href: '/media/press' },
             { slug: 'articles', label: 'Articles', href: '/media/articles' },
           ].map((tab) => (

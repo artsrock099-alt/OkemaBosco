@@ -10,15 +10,15 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24 bg-surface-container">
+      <section className="pt-32 pb-16 md:pt-40 md:pb-24 bg-deep-charcoal text-warm-ivory">
         <div className="container-x text-center max-w-3xl">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
             CONTACT
           </div>
-          <h1 className="font-display text-display-lg-mobile md:text-display-lg text-on-surface tracking-tight leading-tight mb-6">
+          <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             Get in touch.
           </h1>
-          <p className="font-body text-body-md md:text-body-lg text-on-surface-variant">
+          <p className="font-body text-body-md md:text-body-lg text-surface-variant">
             Whether it is a booking, a press inquiry, a collaboration, or you just want to say
             hello — I read every message personally.
           </p>

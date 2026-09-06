@@ -50,9 +50,12 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <>
       <article>
-        <header className="pt-32 pb-16 md:pt-40 md:pb-24 bg-surface-container">
+        <header className="pt-32 pb-16 md:pt-40 md:pb-24 bg-deep-charcoal text-warm-ivory">
           <div className="container-x max-w-3xl text-center">
-            <Link href="/media/articles" className="btn-ghost inline-flex mb-8">
+            <Link
+              href="/media/articles"
+              className="font-label text-label-sm uppercase tracking-widest text-surface-variant hover:text-muted-ochre transition-colors inline-flex mb-8"
+            >
               ← BACK TO ARTICLES
             </Link>
             {data.category && (
@@ -60,10 +63,10 @@ export default async function ArticlePage({ params }: Props) {
                 {data.category.name}
               </div>
             )}
-            <h1 className="font-display text-display-lg-mobile md:text-display-lg text-on-surface tracking-tight leading-tight mb-8">
+            <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-8">
               {data.title}
             </h1>
-            <div className="flex items-center justify-center gap-6 font-label text-label-sm text-on-surface-variant uppercase tracking-widest">
+            <div className="flex items-center justify-center gap-6 font-label text-label-sm text-surface-variant uppercase tracking-widest">
               {data.author?.name && <span>By {data.author.name}</span>}
               {data.publishDate && <span>{formatDate(data.publishDate)}</span>}
             </div>
