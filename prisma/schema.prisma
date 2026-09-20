@@ -28,6 +28,16 @@ model User {
   password      String
   role          Role     @default(EDITOR)
   image         String?
+  // --- security (MFA + login protection) ---
+  mfaEnabled          Boolean   @default(false)
+  /// TOTP secret, encrypted at rest with MFA_ENCRYPTION_KEY (AES-256-GCM).
+  mfaSecret           String?
+  mfaEnabledAt        DateTime?
+  mfaLastVerifiedAt   DateTime?
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+  passwordChangedAt   DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   bookings      Booking[]
@@ -36,6 +46,8 @@ model User {
   auditLogs     AuditLog[]
   sessions      Session[]
   accounts      Account[]
+  recoveryCodes AdminRecoveryCode[]
+  adminSessions AdminSession[]
 }
 
 model Session {
@@ -425,8 +437,10 @@ model Testimonial {
 enum BookingStatus {
   NEW
   REVIEWING
+  CONTACTED
   QUOTED
   CONFIRMED
+  DECLINED
   DEPOSIT_PAID
   FULLY_PAID
   COMPLETED
@@ -541,39 +555,86 @@ model Invoice {
 enum CampaignStatus {
   DRAFT
   SCHEDULED
+  SENDING
   SENT
+  CANCELLED
   FAILED
 }
 
+enum NewsletterStatus {
+  PENDING
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+}
+
+/// `isActive` is kept for backwards compatibility and always mirrors
+/// `status`: ACTIVE/PENDING mean active, anything else means not active.
 model NewsletterSubscriber {
   id           String   @id @default(cuid())
   email        String   @unique
   firstName    String?
   lastName     String?
   isActive     Boolean  @default(true)
+  status       NewsletterStatus @default(ACTIVE)
+  /// Where the signup came from, for example "footer", "newsletter-page".
+  source       String?
+  /// Admin defined segments, for example "school-audience".
+  tags         String[] @default([])
+  /// Generated on first use, so adding the column to existing rows is safe.
+  unsubscribeToken String? @unique
+  confirmedAt  DateTime?
+  lastEmailSentAt DateTime?
   subscribedAt DateTime @default(now())
   unsubscribedAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([status])
 }
 
 model NewsletterCampaign {
   id           String         @id @default(cuid())
+  name         String?
   subject      String
   previewText  String?
+  fromName     String?
+  replyTo      String?
+  /// Audience / segment key, see lib/newsletter/segments.ts
+  audience     String         @default("ACTIVE")
   content      String?        @db.Text
+  /// Structured composer blocks, rendered to `content`.
+  contentBlocks Json          @default("[]")
   status       CampaignStatus @default(DRAFT)
   scheduledAt  DateTime?
   sentAt       DateTime?
+  totalRecipients Int         @default(0)
   totalSent    Int            @default(0)
+  totalFailed  Int            @default(0)
   totalOpened  Int            @default(0)
   totalClicked Int            @default(0)
+  totalBounced Int            @default(0)
+  createdById  String?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+  emails       EmailLog[]
+
+  @@index([status])
 }
 
 // ==========================================
 // CONTACT MESSAGES
 // ==========================================
 
+enum ContactStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+/// `isRead` mirrors `status` for backwards compatibility: it is true for
+/// everything except NEW.
 model ContactMessage {
   id           String   @id @default(cuid())
   name         String
@@ -583,8 +644,12 @@ model ContactMessage {
   subject      String
   message      String   @db.Text
   isRead       Boolean  @default(false)
+  status       ContactStatus @default(NEW)
   repliedAt    DateTime?
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@index([status])
 }
 
 // ==========================================
@@ -706,6 +771,136 @@ model SiteImage {
   updatedAt DateTime @updatedAt
 
   @@index([pageSlug])
+}
+
+// ==========================================
+// ADMIN NOTIFICATIONS
+// ==========================================
+
+enum NotificationType {
+  BOOKING
+  CONTACT
+  NEWSLETTER
+  EMAIL_FAILURE
+  SECURITY
+}
+
+model AdminNotification {
+  id         String           @id @default(cuid())
+  type       NotificationType
+  title      String
+  message    String           @db.Text
+  /// Admin route the notification points at, for example "/admin/bookings".
+  entityType String?
+  entityId   String?
+  link       String?
+  isRead     Boolean          @default(false)
+  emailSent  Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  readAt     DateTime?
+
+  @@index([isRead, createdAt])
+  @@index([type])
+}
+
+/// Per-notification-type delivery switches (Admin -> Settings -> Notifications).
+model NotificationPreference {
+  id        String           @id @default(cuid())
+  type      NotificationType @unique
+  dashboard Boolean          @default(true)
+  email     Boolean          @default(true)
+  updatedAt DateTime         @default(now()) @updatedAt
+}
+
+// ==========================================
+// EMAIL DELIVERY LOG
+// ==========================================
+
+enum EmailStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  BOUNCED
+  COMPLAINED
+  FAILED
+}
+
+model EmailLog {
+  id                String      @id @default(cuid())
+  provider          String      @default("resend")
+  providerMessageId String?     @unique
+  recipient         String
+  subject           String
+  /// One of the EmailType values in lib/email/types.ts
+  type              String
+  status            EmailStatus @default(QUEUED)
+  /// Guards against duplicate sends when an operation is retried.
+  dedupeKey         String?     @unique
+  campaignId        String?
+  campaign          NewsletterCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  bookingId         String?
+  contactMessageId  String?
+  subscriberId      String?
+  error             String?
+  metadata          Json        @default("{}")
+  sentAt            DateTime?
+  deliveredAt       DateTime?
+  failedAt          DateTime?
+  openedAt          DateTime?
+  clickedAt         DateTime?
+  bouncedAt         DateTime?
+  complainedAt      DateTime?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([campaignId])
+  @@index([type, createdAt])
+  @@index([subscriberId])
+}
+
+// ==========================================
+// ADMIN SECURITY
+// ==========================================
+
+/// One row per signed-in admin browser session, so sessions can be listed and
+/// revoked even though NextAuth issues JWTs.
+model AdminSession {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime  @default(now())
+  lastActiveAt DateTime  @default(now())
+  revokedAt    DateTime?
+
+  @@index([userId])
+}
+
+/// Single-use MFA recovery codes. Only the hash is stored.
+model AdminRecoveryCode {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+/// Login history, used for lockouts, security alerts and the audit trail.
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  email     String
+  ipAddress String?
+  userAgent String?
+  success   Boolean  @default(false)
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
+  @@index([ipAddress, createdAt])
 }
 
 // ==========================================

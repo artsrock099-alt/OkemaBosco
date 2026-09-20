@@ -55,15 +55,18 @@ export default function AdminLoginPage() {
             <LoginForm />
           </Suspense>
           <div className="mt-10 p-5 bg-surface-container border border-earth-brown/10">
-            <div className="font-label text-label-sm uppercase tracking-widest text-on-surface-variant mb-2">
-              Demo credentials
+            <div className="font-label text-label-sm uppercase tracking-widest text-on-surface-variant mb-3">
+              Signed out?
             </div>
-            <p className="font-body text-body-md text-on-surface mb-1">
-              <span className="font-label text-muted-ochre">Email:</span> admin@boscookema.com
+            <p className="font-body text-body-md text-on-surface-variant mb-4">
+              This area is only for managing the website. Visitors never need an account.
             </p>
-            <p className="font-body text-body-md text-on-surface">
-              <span className="font-label text-muted-ochre">Password:</span> admin123
-            </p>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 font-label text-label-sm uppercase tracking-widest text-muted-ochre hover:text-earth-brown transition-colors"
+            >
+              ← Back to the site
+            </Link>
           </div>
         </div>
       </div>

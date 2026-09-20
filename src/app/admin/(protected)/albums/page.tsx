@@ -1,39 +1,13 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
-import { formatDateShort } from '@/lib/utils';
 
 export const metadata = { title: 'Albums' };
 
 export default async function AdminAlbumsPage() {
   const albums = await prisma.album.findMany({
     orderBy: [{ year: 'desc' }, { createdAt: 'desc' }],
-    include: { _count: { select: { music: true } } },
+    include: { cover: true, _count: { select: { music: true } } },
   });
-
-  const items = albums.length > 0
-    ? albums
-    : [
-        {
-          id: 'a1',
-          title: 'Roots of Uganda',
-          slug: 'roots-of-uganda',
-          year: 2024,
-          _count: { music: 8 },
-          cover: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: 'a2',
-          title: 'Live at the National Theatre',
-          slug: 'live-national-theatre',
-          year: 2023,
-          _count: { music: 12 },
-          cover: null,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ];
 
   return (
     <div className="space-y-6">
@@ -57,8 +31,24 @@ export default async function AdminAlbumsPage() {
         </Link>
       </div>
 
+      {albums.length === 0 ? (
+        <div className="card-surface p-10 md:p-12 text-center">
+          <h2 className="font-headline text-headline-md text-on-surface mb-3">
+            No albums yet.
+          </h2>
+          <p className="font-body text-body-md text-on-surface-variant mb-6 max-w-md mx-auto">
+            Create your first release, then assign tracks to it from the Music section.
+          </p>
+          <Link
+            href="/admin/albums/new"
+            className="btn-primary inline-flex"
+          >
+            CREATE AN ALBUM
+          </Link>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {items.map((a: any) => (
+        {albums.map((a) => (
           <div key={a.id} className="card-surface p-5 flex flex-col md:flex-row gap-5 hover:shadow-lg transition-all">
             <div className="w-full md:w-32 aspect-square rounded-lg bg-gradient-to-br from-earth-brown/20 via-muted-ochre/10 to-deep-charcoal/10 border border-earth-brown/15 flex items-center justify-center flex-shrink-0 overflow-hidden">
               {a.cover?.url ? (
@@ -71,7 +61,7 @@ export default async function AdminAlbumsPage() {
               <div>
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="font-label text-[10px] uppercase tracking-widest text-muted-ochre">
-                    {a.year || 'N/A'}
+                    {a.year || 'Year not set'}
                   </span>
                 </div>
                 <h3 className="font-headline text-headline-md text-on-surface tracking-tight leading-tight">
@@ -93,6 +83,7 @@ export default async function AdminAlbumsPage() {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }

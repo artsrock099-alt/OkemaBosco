@@ -12,8 +12,10 @@ type MarqueeItem = {
 
 /**
  * Scrolling ticker of upcoming dates, pulled from the Event table.
- * When the database has no upcoming dates yet, it falls back to a few
- * evergreen links so the homepage still has a live band under the hero.
+ *
+ * Renders nothing at all when there are no upcoming dates, so the page closes
+ * up gracefully rather than showing invented events. The ticker only appears
+ * when there is something real to announce.
  */
 export default async function EventsMarquee() {
   let events: any[] = [];
@@ -24,7 +26,7 @@ export default async function EventsMarquee() {
     console.warn('Events marquee could not load events:', error);
   }
 
-  const items: MarqueeItem[] = events.map((ev) => ({
+  const list: MarqueeItem[] = events.map((ev) => ({
     key: ev.id,
     href: `/events/${ev.slug}`,
     date: format(new Date(ev.startDate), 'd MMM').toUpperCase(),
@@ -32,32 +34,7 @@ export default async function EventsMarquee() {
     title: ev.title,
   }));
 
-  const list: MarqueeItem[] =
-    items.length > 0
-      ? items
-      : [
-          {
-            key: 'fallback-search',
-            href: '/events',
-            date: 'SOON',
-            place: 'Kampala, Uganda',
-            title: 'New dates are being confirmed',
-          },
-          {
-            key: 'fallback-book',
-            href: '/book',
-            date: 'BOOK',
-            place: 'Anywhere',
-            title: 'Bring Bosco to your community',
-          },
-          {
-            key: 'fallback-listen',
-            href: '/listen',
-            date: 'LISTEN',
-            place: 'Everywhere',
-            title: 'Live recordings and new releases',
-          },
-        ];
+  if (list.length === 0) return null;
 
   return (
     <div className="marquee-shell relative overflow-hidden bg-deep-charcoal text-warm-ivory border-y border-muted-ochre/25">

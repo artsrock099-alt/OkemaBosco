@@ -35,8 +35,11 @@ import {
   ShieldAlert,
   LogOut,
   X,
+  Bell,
+  ArrowUpRight,
 } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
+import NotificationBell from '@/components/admin/NotificationBell';
 
 type NavGroup = {
   label: string;
@@ -59,6 +62,17 @@ const navGroups: NavGroup[] = [
       { label: 'Site images', href: '/admin/images', icon: <ImageIcon className="w-5 h-5" /> },
       { label: 'Navigation', href: '/admin/navigation', icon: <Navigation className="w-5 h-5" /> },
       { label: 'Site Settings', href: '/admin/settings', icon: <Settings className="w-5 h-5" /> },
+    ],
+  },
+  {
+    label: 'NOTIFICATIONS',
+    items: [
+      { label: 'All notifications', href: '/admin/notifications', icon: <Mail className="w-5 h-5" /> },
+      {
+        label: 'Preferences',
+        href: '/admin/settings/notifications',
+        icon: <Settings className="w-5 h-5" />,
+      },
     ],
   },
   {
@@ -118,23 +132,46 @@ const navGroups: NavGroup[] = [
     items: [
       { label: 'Testimonials', href: '/admin/testimonials', icon: <MessageSquare className="w-5 h-5" /> },
       { label: 'Instruments', href: '/admin/instruments', icon: <Drum className="w-5 h-5" /> },
+      { label: 'Messages', href: '/admin/messages', icon: <MessageSquare className="w-5 h-5" /> },
+    ],
+  },
+  {
+    label: 'NEWSLETTER',
+    items: [
+      { label: 'Overview', href: '/admin/newsletter', icon: <Mail className="w-5 h-5" /> },
       {
-        label: 'Newsletter',
-        href: '/admin/newsletter',
-        icon: <Mail className="w-5 h-5" />,
+        label: 'Subscribers',
+        href: '/admin/newsletter/subscribers',
+        icon: <Users2 className="w-5 h-5" />,
       },
       {
         label: 'Campaigns',
         href: '/admin/newsletter/campaigns',
         icon: <Megaphone className="w-5 h-5" />,
       },
-      { label: 'Messages', href: '/admin/messages', icon: <MessageSquare className="w-5 h-5" /> },
+    ],
+  },
+  {
+    label: 'NOTIFICATIONS',
+    items: [
+      {
+        label: 'All notifications',
+        href: '/admin/notifications',
+        icon: <Bell className="w-5 h-5" />,
+      },
+      {
+        label: 'Preferences',
+        href: '/admin/settings/notifications',
+        icon: <Settings className="w-5 h-5" />,
+      },
     ],
   },
   {
     label: 'SYSTEM',
     items: [
       { label: 'Users', href: '/admin/users', icon: <Users2 className="w-5 h-5" /> },
+      { label: 'Security', href: '/admin/settings/security', icon: <ShieldAlert className="w-5 h-5" /> },
+      { label: 'Audit log', href: '/admin/audit', icon: <Receipt className="w-5 h-5" /> },
       { label: 'SEO', href: '/admin/seo', icon: <ShieldAlert className="w-5 h-5" /> },
     ],
   },
@@ -232,8 +269,17 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
         </ul>
 
         <div className="px-3 pb-6 pt-4 border-t border-warm-ivory/10 mt-auto">
+          <Link
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-3 py-2.5 rounded w-full transition-all font-body text-body-md text-surface-variant opacity-80 hover:bg-muted-ochre/10 hover:opacity-100 hover:text-warm-ivory"
+          >
+            <ArrowUpRight className="w-5 h-5" />
+            <span>View site</span>
+          </Link>
           <button
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
             className="flex items-center gap-3 px-3 py-2.5 rounded w-full transition-all font-body text-body-md text-surface-variant opacity-80 hover:bg-muted-ochre/10 hover:opacity-100 hover:text-warm-ivory"
           >
             <LogOut className="w-5 h-5" />
@@ -258,11 +304,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
             Admin Portal
           </span>
           <div className="flex items-center gap-3">
-            <button className="text-on-surface-variant hover:text-primary hover:bg-surface-container-high p-2 rounded-full transition-all">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-              </svg>
-            </button>
+            <NotificationBell />
             <div className="flex items-center gap-3 pl-3 border-l border-earth-brown/10">
               <div className="w-9 h-9 rounded-full bg-muted-ochre/20 border border-earth-brown/20 flex items-center justify-center">
                 <span className="font-headline text-earth-brown text-body-md leading-none">

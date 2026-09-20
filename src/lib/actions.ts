@@ -826,6 +826,133 @@ export async function deleteMusic(id: string): Promise<ActionResult> {
   }
 }
 
+// ==================== ALBUMS ====================
+
+/** Slugs must be unique, so a clash gets a short suffix rather than failing. */
+async function uniqueAlbumSlug(base: string, ignoreId?: string): Promise<string> {
+  const root = slugify(base) || 'album';
+  let candidate = root;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const clash = await prisma.album.findUnique({
+      where: { slug: candidate },
+      select: { id: true },
+    });
+    if (!clash || clash.id === ignoreId) return candidate;
+    candidate = `${root}-${attempt + 2}`;
+  }
+  return `${root}-${Date.now().toString(36)}`;
+}
+
+function readAlbumForm(formData: FormData) {
+  const title = ((formData.get('title') as string) || '').trim();
+  const yearRaw = ((formData.get('year') as string) || '').trim();
+  const year = yearRaw ? Number.parseInt(yearRaw, 10) : undefined;
+
+  return {
+    title,
+    requestedSlug: ((formData.get('slug') as string) || '').trim(),
+    year: Number.isFinite(year) ? year : undefined,
+    coverId: ((formData.get('coverId') as string) || '').trim() || undefined,
+  };
+}
+
+export async function createAlbum(prev: any, formData: FormData): Promise<ActionResult> {
+  const user = await ensurePermission('music:manage');
+
+  try {
+    const data = readAlbumForm(formData);
+
+    if (data.title.length < 2) {
+      return { success: false, error: 'Please give the album a title.' };
+    }
+    if (data.year !== undefined && (data.year < 1900 || data.year > 2100)) {
+      return { success: false, error: 'Please enter a sensible release year.' };
+    }
+
+    const album = await prisma.album.create({
+      data: {
+        title: data.title,
+        slug: await uniqueAlbumSlug(data.requestedSlug || data.title),
+        year: data.year,
+        coverId: data.coverId,
+      },
+    });
+
+    await createAuditLog('CREATE', 'ALBUM', album.id, user.id, { title: album.title });
+    revalidatePath('/admin/albums');
+    revalidatePath('/listen');
+
+    return { success: true, message: 'Album created', data: { id: album.id } };
+  } catch (error: any) {
+    return { success: false, error: error?.message || 'Could not create the album.' };
+  }
+}
+
+export async function updateAlbum(
+  id: string,
+  prev: any,
+  formData: FormData
+): Promise<ActionResult> {
+  const user = await ensurePermission('music:manage');
+
+  try {
+    const data = readAlbumForm(formData);
+
+    if (data.title.length < 2) {
+      return { success: false, error: 'Please give the album a title.' };
+    }
+
+    const album = await prisma.album.update({
+      where: { id },
+      data: {
+        title: data.title,
+        slug: await uniqueAlbumSlug(data.requestedSlug || data.title, id),
+        year: data.year,
+        coverId: data.coverId ?? null,
+      },
+    });
+
+    await createAuditLog('UPDATE', 'ALBUM', id, user.id, { title: album.title });
+    revalidatePath('/admin/albums');
+    revalidatePath('/listen');
+
+    return { success: true, message: 'Album saved', data: { id: album.id } };
+  } catch (error: any) {
+    return { success: false, error: error?.message || 'Could not save the album.' };
+  }
+}
+
+export async function deleteAlbum(id: string): Promise<ActionResult> {
+  const user = await ensurePermission('music:manage');
+
+  try {
+    // Tracks are kept: they simply become standalone singles.
+    const album = await prisma.album.findUnique({
+      where: { id },
+      select: { title: true, _count: { select: { music: true } } },
+    });
+
+    await prisma.album.delete({ where: { id } });
+
+    await createAuditLog('DELETE', 'ALBUM', id, user.id, {
+      title: album?.title,
+      releasedTracks: album?._count.music ?? 0,
+    });
+
+    revalidatePath('/admin/albums');
+    revalidatePath('/listen');
+
+    return {
+      success: true,
+      message: album?._count.music
+        ? `Album deleted. ${album._count.music} track(s) were kept as standalone releases.`
+        : 'Album deleted',
+    };
+  } catch (error: any) {
+    return { success: false, error: error?.message || 'Could not delete the album.' };
+  }
+}
+
 // ==================== NEWSLETTER SUBSCRIBERS ====================
 
 export async function toggleNewsletterActive(id: string, active: boolean): Promise<ActionResult> {
