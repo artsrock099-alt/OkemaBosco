@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Videos',
@@ -15,13 +18,17 @@ const tabs = [
   { slug: 'articles', label: 'Articles', href: '/media/articles' },
 ];
 
-export default function VideosPage() {
+export default async function VideosPage() {
+  const cmsSections = await getCmsSections('media/videos');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   return (
     <>
-      <section className="pt-32 pb-12 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x text-center">
+      <section className="relative pt-32 pb-12 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia slug="media/videos" gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25" />
+        <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            MEDIA • VIDEOS
+          
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             Videos
@@ -56,13 +63,13 @@ export default function VideosPage() {
         <div className="container-x">
           <div className="text-center mb-10 md:mb-14">
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-3">
-              FEATURED
+            
             </div>
             <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight mb-4">
-              Live at the Kampala National Theatre
+              
             </h2>
             <p className="font-body text-body-md text-on-surface-variant max-w-2xl mx-auto">
-              Bosco in full flow — hear the adungu and the ensemble come alive on stage.
+          
             </p>
           </div>
 

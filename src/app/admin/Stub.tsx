@@ -18,7 +18,7 @@ export default function Stub({
         <h1 className="font-display text-headline-lg text-on-surface tracking-tight">{title}</h1>
         <p className="font-body text-body-md text-on-surface-variant mt-2 max-w-2xl">
           {description ||
-            `This module of the CMS is part of the architecture defined in the master specification. Prisma models, RBAC controls and navigation wiring are already in place — list and CRUD views follow the same composition pattern as Events and Bookings.`}
+            `This module of the CMS is part of the architecture defined in the master specification. Prisma models, RBAC controls and navigation wiring are already in place. List and CRUD views follow the same composition pattern as Events and Bookings.`}
         </p>
       </div>
       <div className="card-surface p-10 md:p-16 text-center border-2 border-dashed border-earth-brown/20">

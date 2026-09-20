@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
+import { getSiteImages } from '@/lib/site-images';
 
 export const metadata: Metadata = {
   title: 'Education',
@@ -16,7 +20,8 @@ const programs = [
     description:
       'Interactive music, traditional instruments, storytelling, rhythm and cultural learning for students of all ages.',
     cta: 'REQUEST A SCHOOL PROGRAM',
-    image: '/OKema/IMG_2190.jpeg',
+    imageKey: 'education-program-school',
+    fallbackImage: '/OKema/schoolresidency6.jpeg',
   },
   {
     slug: 'elderly-visits',
@@ -26,7 +31,8 @@ const programs = [
     description:
       'Live musical experiences designed for senior communities, assisted living, memory care and senior centers.',
     cta: 'SCHEDULE A PERFORMANCE',
-    image: '/OKema/PrimRoseElders6.jpeg',
+    imageKey: 'education-program-elderly',
+    fallbackImage: '/OKema/PrimRoseElders9.jpeg',
   },
   {
     slug: 'live-performance',
@@ -36,31 +42,43 @@ const programs = [
     description:
       'Solo, small ensemble or full band performances for concerts, festivals, weddings, churches and cultural celebrations.',
     cta: 'REQUEST A PERFORMANCE',
-    image: '/OKema/pic3.jpeg',
+    imageKey: 'education-program-live',
+    fallbackImage: '/OKema/liveperformance2.JPG',
   },
 ];
 
-export default function EducationPage() {
+export default async function EducationPage() {
+  const cmsSections = await getCmsSections('education');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
+  const images = await getSiteImages();
+
   return (
     <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x text-center">
+      <section className="relative min-h-[70vh] md:min-h-[84vh] flex flex-col justify-center pt-32 pb-16 md:pb-24 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia
+          slug="education"
+          defaultImage="/OKema/schoolresidency5.jpeg"
+          defaultOverlay={50}
+          gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25"
+        />
+        <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            EDUCATION
+        
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6 max-w-4xl mx-auto">
             Music as a way of learning.
           </h1>
           <p className="font-body text-body-md md:text-body-lg text-surface-variant max-w-2xl mx-auto">
-            Through interactive programs, Bosco brings the richness of Ugandan culture to
-            classrooms, senior communities and organizations — creating connection through shared
-            musical experience.
+            Through interactive programs Bosco brings the richness of Ugandan culture to
+            classrooms, senior communities and organizations, and creates connection through a
+            shared musical experience.
           </p>
         </div>
       </section>
 
       <section className="section-y">
-        <div className="container-x space-y-24 md:space-y-32">
+        <div className="container-x space-y-14 md:space-y-20">
           {programs.map((p, i) => (
             <div
               key={p.slug}
@@ -70,7 +88,11 @@ export default function EducationPage() {
             >
               <div className="md:col-span-7">
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                  <img
+                    src={images[p.imageKey].url || p.fallbackImage}
+                    alt={images[p.imageKey].alt || p.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
               <div className="md:col-span-5 md:px-8">
@@ -98,8 +120,8 @@ export default function EducationPage() {
             Custom programs available.
           </h2>
           <p className="font-body text-body-lg text-on-surface-variant mb-10 max-w-xl mx-auto">
-            Looking for something specific? Workshops, festivals, corporate events, cultural days —
-            reach out to design a program for your community.
+            Looking for something specific? Workshops, festivals, corporate events, cultural days.
+            Tell us what you have in mind and we will design a program around it.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/book" className="btn-primary">

@@ -15,11 +15,7 @@ export default function AdminLoginPage() {
       {/* Brand / Hero Side */}
       <div className="md:w-1/2 relative flex flex-col justify-between p-8 md:p-16 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-20">
-          <img
-            src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80"
-            alt=""
-            className="w-full h-full object-cover"
-          />
+          <img src="/OKema/liveperformance1.JPG" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-br from-deep-charcoal via-deep-charcoal/60 to-deep-charcoal" />
         </div>
         <div className="relative z-10">

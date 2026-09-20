@@ -24,7 +24,7 @@ export default async function AdminInvoicesPage() {
   const defaultInvoices = invoices.length > 0 ? invoices : [
     {
       id: 'i1', number: 'INV-2026-0003', status: 'PAID', amount: 1500000, dueDate: new Date(Date.now() + 86400000 * 5), issuedAt: new Date(Date.now() - 86400000 * 14), paidAt: new Date(Date.now() - 86400000 * 10),
-      createdAt: new Date(), notes: 'Full payment — private wedding reception',
+      createdAt: new Date(), notes: 'Full payment, private wedding reception',
       booking: { reference: 'BK-0000', customerName: 'Private Wedding Reception', customerEmail: 'events@weddings.com' },
       payments: [{ id: '1', amount: 1500000, status: 'PAID' }],
     },
@@ -146,7 +146,7 @@ export default async function AdminInvoicesPage() {
                         </div>
                       </td>
                       <td className="py-4 px-6">
-                        <div className="font-medium text-on-surface">{inv.booking?.customerName || '—'}</div>
+                        <div className="font-medium text-on-surface">{inv.booking?.customerName || 'N/A'}</div>
                         <div className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant truncate max-w-[220px]">
                           {inv.booking?.customerEmail}
                         </div>
@@ -162,11 +162,11 @@ export default async function AdminInvoicesPage() {
                         )}
                       </td>
                       <td className="py-4 px-6 text-on-surface-variant">
-                        {inv.issuedAt ? formatDateShort(inv.issuedAt) : '—'}
+                        {inv.issuedAt ? formatDateShort(inv.issuedAt) : 'N/A'}
                       </td>
                       <td className="py-4 px-6">
                         <span className={isOverdue ? 'text-error' : 'text-on-surface-variant'}>
-                          {inv.dueDate ? formatDateShort(inv.dueDate) : '—'}
+                          {inv.dueDate ? formatDateShort(inv.dueDate) : 'N/A'}
                         </span>
                       </td>
                       <td className="py-4 px-6 text-right">

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import { formatDateShort } from '@/lib/utils';
+import { SITE_PAGES } from '@/lib/site-pages';
+import ScaffoldPageButton from '@/components/admin/ScaffoldPageButton';
 
 export const metadata = { title: 'Pages' };
 
@@ -18,6 +20,8 @@ export default async function AdminPagesPage() {
     },
     orderBy: { updatedAt: 'desc' },
   });
+
+  const byslug = new Map(pages.map((p) => [p.slug, p]));
 
   return (
     <div className="space-y-6">
@@ -52,7 +56,7 @@ export default async function AdminPagesPage() {
               {pages.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-16 text-center text-on-surface-variant">
-                    No pages yet — create your first page above.
+                    No pages yet. Create your first page above.
                   </td>
                 </tr>
               ) : (
@@ -106,6 +110,90 @@ export default async function AdminPagesPage() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+      <div>
+        <div className="flex justify-between items-end flex-wrap gap-4 mb-4">
+          <div>
+            <h2 className="font-display text-headline-md text-on-surface tracking-tight">
+              Site pages
+            </h2>
+            <p className="font-body text-body-md text-on-surface-variant mt-1 max-w-3xl">
+              Every public page on the site. Pages marked “Designed layout” still use the layout
+              built in code. Use <strong className="text-on-surface">Make editable</strong> to
+              create a draft copy with editable sections, then publish it from the Page Builder
+              when you are happy with it.
+            </p>
+          </div>
+        </div>
+
+        <div className="card-surface overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-body text-body-md min-w-[720px]">
+              <thead className="font-label text-label-sm text-on-surface-variant bg-surface-container/50 border-b border-earth-brown/10">
+                <tr>
+                  <th className="py-3 px-6 font-normal">Page</th>
+                  <th className="py-3 px-6 font-normal">Sections</th>
+                  <th className="py-3 px-6 font-normal">Status</th>
+                  <th className="py-3 px-6 font-normal text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-earth-brown/10">
+                {SITE_PAGES.map((sitePage) => {
+                  const record = byslug.get(sitePage.slug);
+                  const sectionCount = record?._count.sections ?? 0;
+                  const live = record?.status === 'PUBLISHED' && sectionCount > 0;
+                  return (
+                    <tr key={sitePage.slug} className="hover:bg-surface-container/30 transition-colors">
+                      <td className="py-4 px-6">
+                        <div className="font-medium text-on-surface">{sitePage.title}</div>
+                        <div className="font-label text-label-sm text-on-surface-variant mt-1">
+                          {sitePage.path}
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 text-on-surface-variant">
+                        {record ? sectionCount : 'Designed layout'}
+                      </td>
+                      <td className="py-4 px-6">
+                        {live ? (
+                          <span className="inline-block px-2 py-1 font-label text-[10px] rounded uppercase tracking-wider bg-earth-brown/10 text-earth-brown">
+                            Editable &amp; live
+                          </span>
+                        ) : record ? (
+                          <span className="inline-block px-2 py-1 font-label text-[10px] rounded uppercase tracking-wider bg-surface-container-high text-on-surface-variant border border-earth-brown/20">
+                            {record.status} draft copy
+                          </span>
+                        ) : (
+                          <span className="inline-block px-2 py-1 font-label text-[10px] rounded uppercase tracking-wider bg-surface-container-high text-on-surface-variant">
+                            Designed layout
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-4 px-6 text-right space-x-3 whitespace-nowrap">
+                        {record ? (
+                          <Link
+                            href={`/admin/builder/${record.slug}`}
+                            className="text-muted-ochre hover:text-earth-brown font-label text-label-sm uppercase tracking-widest"
+                          >
+                            Edit sections
+                          </Link>
+                        ) : (
+                          <ScaffoldPageButton slug={sitePage.slug} variant="link" />
+                        )}
+                        <a
+                          href={sitePage.path}
+                          target="_blank"
+                          className="text-on-surface-variant hover:text-on-surface font-label text-label-sm uppercase tracking-widest"
+                        >
+                          View
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

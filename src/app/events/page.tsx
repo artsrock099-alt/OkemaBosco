@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { getUpcomingEvents, getPastEvents } from '@/lib/queries';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Events',
@@ -34,7 +37,7 @@ function EventRow({ event }: { event: EventRowData }) {
         <span className="font-label text-label-sm text-muted-ochre uppercase tracking-widest">
           {month}
         </span>
-        <span className="font-display text-headline-lg md:text-display-lg text-on-surface leading-none">
+        <span className="font-display text-headline-lg md:text-headline-lg text-on-surface leading-none">
           {day}
         </span>
         <span className="font-label text-label-sm text-on-surface-variant uppercase tracking-widest md:mt-2">
@@ -76,12 +79,12 @@ function EventRow({ event }: { event: EventRowData }) {
 
 function EmptyState() {
   return (
-    <div className="card-surface p-14 md:p-20 text-center rounded-xl">
+    <div className="card-surface p-10 md:p-12 text-center rounded-xl">
       <h3 className="font-headline text-headline-md text-on-surface mb-3">
         No events scheduled yet.
       </h3>
       <p className="font-body text-body-md text-on-surface-variant mb-6 max-w-md mx-auto">
-        Check back soon for upcoming performances — or bring Bosco to your community.
+        Check back soon for upcoming performances, or bring Bosco to your own community.
       </p>
       <Link href="/book" className="btn-primary">
         BOOK BOSCO
@@ -91,6 +94,9 @@ function EmptyState() {
 }
 
 export default async function EventsPage() {
+  const cmsSections = await getCmsSections('events');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   const [upcoming, past] = await Promise.all([
     getUpcomingEvents(20),
     getPastEvents(20),
@@ -98,16 +104,22 @@ export default async function EventsPage() {
 
   return (
     <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-20 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x text-center">
+      <section className="relative min-h-[70vh] md:min-h-[80vh] flex flex-col justify-center pt-32 pb-16 md:pb-20 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia
+          slug="events"
+          defaultImage="/OKema/pic3.jpeg"
+          defaultOverlay={40}
+          gradient="from-deep-charcoal via-deep-charcoal/60 to-deep-charcoal/30"
+        />
+        <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            EVENTS
+          
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             Performances & Engagements
           </h1>
           <p className="font-body text-body-md md:text-body-lg text-surface-variant max-w-2xl mx-auto">
-            From intimate community gatherings to festival stages — find out where Bosco is
+            From intimate community gatherings to festival stages, here is where Bosco is
             performing next.
           </p>
         </div>

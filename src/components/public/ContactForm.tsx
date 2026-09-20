@@ -12,7 +12,7 @@ export default function ContactForm() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // Capture the form element up-front — React nulls `e.currentTarget`
+    // Capture the form element up front. React nulls `e.currentTarget`
     // after the first await, so referencing it later throws.
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -62,10 +62,10 @@ export default function ContactForm() {
           </svg>
         </div>
         <h3 className="font-headline text-headline-md text-on-surface mb-3">
-          Message sent — thank you!
+          Message sent. Thank you!
         </h3>
         <p className="font-body text-body-md text-on-surface-variant mb-6">
-          I usually respond within 2–3 business days.
+          I usually reply within two or three business days.
         </p>
         <button
           onClick={() => setState('idle')}

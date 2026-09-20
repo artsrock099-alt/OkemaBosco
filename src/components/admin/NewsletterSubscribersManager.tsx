@@ -182,7 +182,7 @@ export default function NewsletterSubscribersManager({ initialSubscribers }: Pro
                   <tr key={s.id} className="hover:bg-surface-container/30 transition-colors">
                     <td className="py-4 px-6 text-on-surface font-medium">{s.email}</td>
                     <td className="py-4 px-6 text-on-surface-variant">
-                      {[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}
+                      {[s.firstName, s.lastName].filter(Boolean).join(' ') || 'N/A'}
                     </td>
                     <td className="py-4 px-6 text-on-surface-variant">
                       {formatDateShort(s.subscribedAt)}

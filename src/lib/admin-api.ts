@@ -7,7 +7,7 @@ export type AdminSession = {
 };
 
 /**
- * Guards an admin API route. Returns { error, session } — if error is set,
+ * Guards an admin API route. Returns { error, session }. If error is set,
  * respond with it immediately.
  */
 export async function requireAdmin(): Promise<

@@ -57,7 +57,7 @@ export default function EventForm({
               required
               defaultValue={initial?.title}
               className="input-field text-headline-md font-headline"
-              placeholder="e.g. Kampala Arts Festival — Main Stage"
+              placeholder="e.g. Kampala Arts Festival, Main Stage"
               onBlur={(e) => {
                 const slugField = document.querySelector('[name="slug"]') as HTMLInputElement;
                 if (slugField && !slugField.value) {
@@ -122,7 +122,7 @@ export default function EventForm({
                 defaultValue={initial?.categoryId}
                 className="input-field appearance-none"
               >
-                <option value="">— Select category —</option>
+                <option value="">Select category</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}

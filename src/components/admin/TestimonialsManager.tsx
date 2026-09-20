@@ -83,7 +83,7 @@ export default function TestimonialsManager({ testimonials }: Props) {
               No testimonials yet.
             </h3>
             <p className="font-body text-body-md text-on-surface-variant mb-6 max-w-xl mx-auto">
-              Add your first testimonial above — they will appear across the public site homepage, events page and booking flow.
+              Add your first testimonial above. They will appear across the public homepage, the events page and the booking flow.
             </p>
           </div>
         ) : (

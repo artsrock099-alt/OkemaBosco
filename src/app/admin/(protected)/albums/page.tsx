@@ -71,7 +71,7 @@ export default async function AdminAlbumsPage() {
               <div>
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="font-label text-[10px] uppercase tracking-widest text-muted-ochre">
-                    {a.year || '—'}
+                    {a.year || 'N/A'}
                   </span>
                 </div>
                 <h3 className="font-headline text-headline-md text-on-surface tracking-tight leading-tight">

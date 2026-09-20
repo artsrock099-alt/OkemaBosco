@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 
 type NavChild = {
   id: string;
@@ -37,6 +37,7 @@ const defaultFallbackNav: NavItem[] = [
     children: [
       { id: '3a', label: 'School Residency', url: '/education/school-residency', isExternal: false, children: [] },
       { id: '3b', label: 'Elderly Visits', url: '/education/elderly-visits', isExternal: false, children: [] },
+      { id: '3c', label: 'Live Performance', url: '/live-performance', isExternal: false, children: [] },
     ],
   },
   { id: '4', label: 'Listen', url: '/listen', isExternal: false, children: [] },
@@ -61,6 +62,7 @@ export default function HeaderClient({ brandName, navItems }: HeaderClientProps)
   const items = navItems.length > 0 ? navItems : defaultFallbackNav;
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -96,46 +98,85 @@ export default function HeaderClient({ brandName, navItems }: HeaderClientProps)
           </div>
 
           <div className="hidden md:flex items-center gap-8">
-            {items.map((item) => (
-              <div key={item.id} className="relative group">
-                {item.isExternal ? (
-                  <a href={item.url} target="_blank" rel="noopener noreferrer" className="nav-link">
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link href={item.url} className="nav-link">
-                    {item.label}
-                  </Link>
-                )}
-                {item.children && item.children.length > 0 && (
-                  <div className="absolute top-full left-0 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="bg-surface border border-earth-brown/10 rounded shadow-xl p-2 min-w-[220px]">
-                      {item.children.map((child) => (
-                        child.isExternal ? (
-                          <a
-                            key={child.id}
-                            href={child.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block px-4 py-2 text-body-md text-on-surface-variant hover:bg-surface-container hover:text-muted-ochre rounded transition-colors"
-                          >
-                            {child.label}
-                          </a>
-                        ) : (
-                          <Link
-                            key={child.id}
-                            href={child.url}
-                            className="block px-4 py-2 text-body-md text-on-surface-variant hover:bg-surface-container hover:text-muted-ochre rounded transition-colors"
-                          >
-                            {child.label}
-                          </Link>
-                        )
-                      ))}
+            {items.map((item) => {
+              const hasChildren = Boolean(item.children && item.children.length > 0);
+              const isOpen = openDropdown === item.id;
+
+              return (
+                <div
+                  key={item.id}
+                  className="relative"
+                  onMouseEnter={() => setOpenDropdown(item.id)}
+                  onMouseLeave={() => setOpenDropdown((current) => (current === item.id ? null : current))}
+                  onFocus={() => setOpenDropdown(item.id)}
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                      setOpenDropdown((current) => (current === item.id ? null : current));
+                    }
+                  }}
+                >
+                  {item.isExternal ? (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="nav-link inline-flex items-center gap-1.5"
+                    >
+                      {item.label}
+                      {hasChildren && <ChevronDown className="w-3 h-3" />}
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.url}
+                      className="nav-link inline-flex items-center gap-1.5"
+                      aria-haspopup={hasChildren || undefined}
+                      aria-expanded={hasChildren ? isOpen : undefined}
+                    >
+                      {item.label}
+                      {hasChildren && (
+                        <ChevronDown
+                          className={cn('w-3 h-3 transition-transform duration-300', isOpen && 'rotate-180')}
+                        />
+                      )}
+                    </Link>
+                  )}
+
+                  {hasChildren && (
+                    <div
+                      className={cn(
+                        'absolute top-full left-0 pt-4 transition-all duration-300 z-50',
+                        isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+                      )}
+                    >
+                      <div className="bg-surface border border-earth-brown/10 rounded shadow-xl p-2 min-w-[220px]">
+                        {item.children.map((child) =>
+                          child.isExternal ? (
+                            <a
+                              key={child.id}
+                              href={child.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block px-4 py-2 text-body-md text-on-surface-variant hover:bg-surface-container hover:text-muted-ochre rounded transition-colors"
+                            >
+                              {child.label}
+                            </a>
+                          ) : (
+                            <Link
+                              key={child.id}
+                              href={child.url}
+                              className="block px-4 py-2 text-body-md text-on-surface-variant hover:bg-surface-container hover:text-muted-ochre rounded transition-colors"
+                              onClick={() => setOpenDropdown(null)}
+                            >
+                              {child.label}
+                            </Link>
+                          )
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <Link href="/book" className="hidden md:inline-block btn-primary !px-6 !py-3">

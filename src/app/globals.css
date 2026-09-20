@@ -112,6 +112,72 @@ body {
     }
   }
 
+  /* Testimonial flipbook: the page turns in from the spine */
+  .flip-next {
+    transform-origin: left center;
+    animation: flipNext 0.62s cubic-bezier(0.24, 1, 0.32, 1) both;
+    backface-visibility: hidden;
+  }
+
+  .flip-prev {
+    transform-origin: right center;
+    animation: flipPrev 0.62s cubic-bezier(0.24, 1, 0.32, 1) both;
+    backface-visibility: hidden;
+  }
+
+  @keyframes flipNext {
+    from {
+      opacity: 0.35;
+      transform: rotateY(-78deg) translateX(2%);
+      box-shadow: 0 24px 60px rgba(28, 28, 22, 0.35);
+    }
+    to {
+      opacity: 1;
+      transform: rotateY(0deg) translateX(0);
+    }
+  }
+
+  @keyframes flipPrev {
+    from {
+      opacity: 0.35;
+      transform: rotateY(78deg) translateX(-2%);
+      box-shadow: 0 24px 60px rgba(28, 28, 22, 0.35);
+    }
+    to {
+      opacity: 1;
+      transform: rotateY(0deg) translateX(0);
+    }
+  }
+
+  /* Upcoming events ticker */
+  .animate-marquee {
+    animation: marquee 42s linear infinite;
+  }
+
+  .marquee-shell:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-marquee {
+      animation: none;
+      flex-wrap: wrap;
+    }
+    .flip-next,
+    .flip-prev {
+      animation: fadeIn 0.3s ease-out both;
+    }
+  }
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

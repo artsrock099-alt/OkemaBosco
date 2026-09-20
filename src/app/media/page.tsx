@@ -1,10 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
+import { getSiteImages } from '@/lib/site-images';
 
 export const metadata: Metadata = {
   title: 'Media',
   description:
-    'Photos, videos, press features and articles about Bosco Okema — a visual archive of performances, events and cultural moments.',
+    'Photos, videos, press features and articles about Bosco Okema. A visual archive of performances, events and cultural moments.',
 };
 
 const collections = [
@@ -12,43 +16,53 @@ const collections = [
     title: 'Gallery',
     caption: 'Performance & behind-the-scenes',
     href: '/media/photos',
-    image: '/OKema/pic2.jpeg',
+    imageKey: 'media-collection-gallery',
+    fallbackImage: '/OKema/pic2.jpeg',
   },
   {
     title: 'Videos',
     caption: 'Live & in-studio',
     href: '/media/videos',
-    image: '/OKema/IMG_4864.JPG',
+    imageKey: 'media-collection-videos',
+    fallbackImage: '/OKema/IMG_4864.JPG',
   },
   {
     title: 'Instrument Gallery',
     caption: 'Handmade tools of sound',
     href: '/media/instruments',
-    image: '/OKema/pic7.png',
+    imageKey: 'media-collection-instruments',
+    fallbackImage: '/OKema/pic7.png',
   },
   {
     title: 'Press',
     caption: 'In the news',
     href: '/media/press',
-    image: '/OKema/IMG_2190.jpeg',
+    imageKey: 'media-collection-press',
+    fallbackImage: '/OKema/schoolresidency9.jpeg',
   },
 ];
 
-export default function MediaPage() {
+export default async function MediaPage() {
+  const cmsSections = await getCmsSections('media');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
+  const images = await getSiteImages();
+
   return (
     <>
       {/* HERO */}
-      <section className="pt-32 pb-14 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x text-center">
+      <section className="relative pt-32 pb-14 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia slug="media" gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25" />
+        <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            MEDIA
+          
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             Images, Stories & Sounds
           </h1>
           <p className="font-body text-body-md md:text-body-lg text-surface-variant max-w-2xl mx-auto">
-            A visual archive of performances, cultural moments, and stories — from the stage to
-            the classroom.
+            A visual archive of performances, cultural moments and stories, from the stage to the
+            classroom.
           </p>
         </div>
       </section>
@@ -64,8 +78,8 @@ export default function MediaPage() {
             >
               <div className="relative aspect-square overflow-hidden rounded-xl bg-inverse-surface">
                 <img
-                  src={c.image}
-                  alt={c.title}
+                  src={images[c.imageKey].url || c.fallbackImage}
+                  alt={images[c.imageKey].alt || c.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-deep-charcoal/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -89,12 +103,12 @@ export default function MediaPage() {
             className="group relative block overflow-hidden rounded-xl aspect-[16/7] md:aspect-[21/6]"
           >
             <img
-              src="/OKema/pic3.jpeg"
-              alt="Stories & articles"
+              src={images['media-articles-banner'].url || '/OKema/pic3.jpeg'}
+              alt={images['media-articles-banner'].alt || 'Stories & articles'}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-deep-charcoal via-deep-charcoal/70 to-transparent" />
-            <div className="relative h-full flex flex-col justify-center p-8 md:p-16 max-w-xl">
+            <div className="relative h-full flex flex-col justify-center p-8 md:p-12 max-w-xl">
               <span className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-3">
                 STORIES
               </span>

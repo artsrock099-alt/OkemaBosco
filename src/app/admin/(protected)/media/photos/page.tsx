@@ -18,7 +18,7 @@ export default async function AdminMediaPhotosPage() {
           type: 'IMAGE' as const,
           title: 'Bosco on stage live',
           filename: 'bosco-stage.jpg',
-          url: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=1200&q=80',
+          url: '/OKema/pic3.jpeg',
           mimeType: 'image/jpeg',
           size: 1_200_000,
           width: 1200,
@@ -37,7 +37,7 @@ export default async function AdminMediaPhotosPage() {
           Photo Library
         </h1>
         <p className="font-body text-body-md text-on-surface-variant mt-2 max-w-2xl">
-          Photography for the site — portraits, performance shots, rehearsal and behind-the-scenes photos. Photos can be inserted anywhere in the Page Builder and CMS modules.
+          Photography for the site: portraits, performance shots, rehearsal and behind-the-scenes photos. Photos can be inserted anywhere in the Page Builder and CMS modules.
         </p>
       </div>
       <MediaManager type="IMAGE" items={defaultPhotos as any} />

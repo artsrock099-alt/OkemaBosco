@@ -1,12 +1,19 @@
 import Link from 'next/link';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
 
 export const metadata = { title: 'Privacy Policy' };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const cmsSections = await getCmsSections('privacy');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   return (
     <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-20 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x max-w-4xl">
+      <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia slug="privacy" gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25" />
+        <div className="relative z-10 container-x max-w-4xl">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
             LEGAL
           </div>
@@ -31,7 +38,7 @@ export default function PrivacyPage() {
               <ul className="space-y-2 list-disc list-inside">
                 <li>Contact details you provide through booking, contact, or newsletter forms (name, email, phone, organization).</li>
                 <li>Event and booking details you submit, including dates, venues, and preferences.</li>
-                <li>Usage data such as pages visited, referral sources, and device information — collected via standard website analytics.</li>
+                <li>Usage data such as pages visited, referral sources, and device information, collected through standard website analytics.</li>
               </ul>
             </div>
             <div>
@@ -57,8 +64,8 @@ export default function PrivacyPage() {
               <p>
                 You may request access, correction, or deletion of your personal information by
                 writing to{' '}
-                <a href="mailto:hello@boscookema.com" className="text-muted-ochre hover:underline">
-                  hello@boscookema.com
+                <a href="mailto:okemabosco18@gmail.com" className="text-muted-ochre hover:underline">
+                  okemabosco18@gmail.com
                 </a>
                 . We will respond to all lawful requests promptly.
               </p>

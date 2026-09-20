@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPressItems } from '@/lib/queries';
 import { formatDate } from '@/lib/utils';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Press',
@@ -9,7 +12,17 @@ export const metadata: Metadata = {
     'Press coverage, interviews, and media features about Bosco Okema.',
 };
 
+const PRESS_FALLBACK_IMAGES = [
+  '/OKema/IMG_4864.JPG',
+  '/OKema/culturePerformance.JPG',
+  '/OKema/schoolresidency9.jpeg',
+  '/OKema/PrimRoseElders6.jpeg',
+];
+
 export default async function PressPage() {
+  const cmsSections = await getCmsSections('media/press');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   const pressItems = await getPressItems();
 
   const fallbackPress = [
@@ -21,7 +34,7 @@ export default async function PressPage() {
       url: '#',
       description:
         'An in-depth feature on how Bosco Okema is bridging generations through the Adungu and storytelling.',
-      img: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80',
+      img: '/OKema/IMG_4864.JPG',
     },
     {
       id: '2',
@@ -31,7 +44,7 @@ export default async function PressPage() {
       url: '#',
       description:
         'Bosco Okema is profiled among a new generation of artists honoring tradition while looking forward.',
-      img: 'https://images.unsplash.com/photo-1493612276216-ee3925520721?w=800&q=80',
+      img: '/OKema/culturePerformance.JPG',
     },
     {
       id: '3',
@@ -40,8 +53,8 @@ export default async function PressPage() {
       date: new Date('2024-11-18'),
       url: '#',
       description:
-        'How school residency programs are transforming cultural education — with a case study from Bosco.',
-      img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80',
+        'How school residency programs are transforming cultural education, with a case study from Bosco.',
+      img: '/OKema/schoolresidency9.jpeg',
     },
     {
       id: '4',
@@ -51,7 +64,7 @@ export default async function PressPage() {
       url: '#',
       description:
         'A wide-ranging conversation on heritage, mentorship and the meaning of home in every song.',
-      img: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&q=80',
+      img: '/OKema/PrimRoseElders6.jpeg',
     },
   ];
 
@@ -59,10 +72,11 @@ export default async function PressPage() {
 
   return (
     <>
-      <section className="pt-32 pb-12 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x text-center">
+      <section className="relative pt-32 pb-12 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia slug="media/press" gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25" />
+        <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            MEDIA • PRESS
+          
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             Press
@@ -97,7 +111,7 @@ export default async function PressPage() {
       </div>
       <section className="pb-section-gap">
         <div className="container-x grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {items.map((p: any) => (
+          {items.map((p: any, i: number) => (
             <a
               key={p.id}
               href={p.url}
@@ -107,7 +121,10 @@ export default async function PressPage() {
             >
               <div className="relative md:w-1/2 aspect-[4/3] md:aspect-auto flex-shrink-0 bg-surface-container-high">
                 <img
-                  src={p.img || (p.image ? p.image.url : 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80')}
+                  src={
+                    p.img ||
+                    (p.image ? p.image.url : PRESS_FALLBACK_IMAGES[i % PRESS_FALLBACK_IMAGES.length])
+                  }
                   alt={p.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />

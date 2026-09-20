@@ -115,7 +115,7 @@ export default function NewArticleForm({ categories }: Props) {
                 Category
               </label>
               <select name="categoryId" className="input-field appearance-none">
-                <option value="">— Uncategorised —</option>
+                <option value="">Uncategorised</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}

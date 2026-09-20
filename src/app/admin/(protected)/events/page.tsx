@@ -63,11 +63,11 @@ export default async function AdminEventsPage() {
                     </td>
                     <td className="py-4 px-6">
                       <span className="font-label text-label-sm uppercase tracking-widest text-muted-ochre">
-                        {ev.category?.name || '—'}
+                        {ev.category?.name || 'N/A'}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-on-surface-variant truncate max-w-[220px]">
-                      {ev.venue || ev.location || '—'}
+                      {ev.venue || ev.location || 'N/A'}
                     </td>
                     <td className="py-4 px-6">
                       <span

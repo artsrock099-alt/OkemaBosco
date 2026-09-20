@@ -68,7 +68,7 @@ export default async function AdminArticlesPage() {
               {articles.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-16 text-center text-on-surface-variant">
-                    No articles yet — write your first story above.
+                    No articles yet. Write your first story above.
                   </td>
                 </tr>
               ) : (
@@ -84,11 +84,11 @@ export default async function AdminArticlesPage() {
                     </td>
                     <td className="py-4 px-6">
                       <span className="font-label text-label-sm uppercase tracking-widest text-muted-ochre">
-                        {a.category?.name || '—'}
+                        {a.category?.name || 'N/A'}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-on-surface-variant">
-                      {a.author?.name || '—'}
+                      {a.author?.name || 'N/A'}
                     </td>
                     <td className="py-4 px-6">
                       <span
@@ -100,7 +100,7 @@ export default async function AdminArticlesPage() {
                       </span>
                     </td>
                     <td className="py-4 px-6 text-on-surface-variant">
-                      {a.publishDate ? formatDateShort(a.publishDate) : '—'}
+                      {a.publishDate ? formatDateShort(a.publishDate) : 'N/A'}
                     </td>
                     <td className="py-4 px-6 text-right space-x-3">
                       <Link

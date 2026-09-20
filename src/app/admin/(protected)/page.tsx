@@ -40,6 +40,8 @@ export default async function AdminDashboardPage() {
     upcomingEvents,
     recentMessages,
     musicCount,
+    recentSubscribers,
+    newSubscribersLastWeek,
   ] = await Promise.all([
     prisma.event.count({
       where: { isPublished: true, startDate: { gte: now } },
@@ -64,7 +66,47 @@ export default async function AdminDashboardPage() {
       take: 5,
     }),
     prisma.music.count(),
+    prisma.newsletterSubscriber.findMany({
+      orderBy: { subscribedAt: 'desc' },
+      take: 5,
+    }),
+    prisma.newsletterSubscriber.count({
+      where: { subscribedAt: { gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } },
+    }),
   ]);
+
+  // One chronological feed of everything that arrived recently.
+  const notifications = [
+    ...recentBookings.map((b: any) => ({
+      id: `booking-${b.id}`,
+      kind: 'Booking request',
+      title: b.customerName,
+      detail: `${b.type.replace(/_/g, ' ').toLowerCase()} for ${formatDateShort(b.eventDate)}`,
+      href: '/admin/bookings',
+      date: new Date(b.createdAt),
+      new: b.status === 'NEW',
+    })),
+    ...recentMessages.map((m: any) => ({
+      id: `message-${m.id}`,
+      kind: 'Message',
+      title: m.name,
+      detail: m.subject || m.message.slice(0, 60),
+      href: '/admin/messages',
+      date: new Date(m.createdAt),
+      new: !m.isRead,
+    })),
+    ...recentSubscribers.map((s: any) => ({
+      id: `sub-${s.id}`,
+      kind: 'Newsletter',
+      title: s.email,
+      detail: 'Joined the mailing list',
+      href: '/admin/newsletter',
+      date: new Date(s.subscribedAt),
+      new: true,
+    })),
+  ]
+    .sort((a, b) => b.date.getTime() - a.date.getTime())
+    .slice(0, 6);
 
   const stats = [
     {
@@ -181,6 +223,75 @@ export default async function AdminDashboardPage() {
         ))}
       </section>
 
+      {/* What came in lately */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8">
+          <div className="flex justify-between items-end border-b border-earth-brown/20 pb-3 mb-4">
+            <h2 className="font-headline text-headline-md text-on-surface">Notifications</h2>
+            <span className="font-label text-label-sm uppercase tracking-widest text-on-surface-variant">
+              {newBookings + unreadMessages} needing attention
+            </span>
+          </div>
+          <div className="bg-surface-container border border-earth-brown/10 divide-y divide-earth-brown/10">
+            {notifications.length === 0 ? (
+              <p className="p-4 font-body text-body-md text-on-surface-variant">
+                Nothing new yet. Bookings, messages and newsletter sign-ups will appear here.
+              </p>
+            ) : (
+              notifications.map((n) => (
+                <Link
+                  key={n.id}
+                  href={n.href}
+                  className="flex items-start gap-4 p-4 hover:bg-surface transition-colors"
+                >
+                  <span
+                    className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
+                      n.new ? 'bg-accent-orange' : 'bg-earth-brown/30'
+                    }`}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex justify-between gap-3">
+                      <span className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">
+                        {n.kind}
+                      </span>
+                      <span className="font-label text-[10px] uppercase tracking-wider text-on-surface-variant whitespace-nowrap">
+                        {formatDateShort(n.date)}
+                      </span>
+                    </div>
+                    <div className="font-medium text-on-surface truncate">{n.title}</div>
+                    <div className="font-body text-body-md text-on-surface-variant truncate capitalize">
+                      {n.detail}
+                    </div>
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
+        </div>
+
+        <div className="lg:col-span-4 space-y-4">
+          <div className="border-b border-earth-brown/20 pb-3">
+            <h2 className="font-headline text-headline-md text-on-surface">Mailing list</h2>
+          </div>
+          <div className="p-5 bg-surface-container border border-earth-brown/10 space-y-3">
+            <div className="flex items-baseline justify-between">
+              <span className="font-body text-body-md text-on-surface-variant">Active subscribers</span>
+              <span className="font-display text-headline-md text-on-surface">{newsletterSubs}</span>
+            </div>
+            <div className="flex items-baseline justify-between">
+              <span className="font-body text-body-md text-on-surface-variant">Joined this week</span>
+              <span className="font-display text-headline-md text-on-surface">{newSubscribersLastWeek}</span>
+            </div>
+            <Link
+              href="/admin/newsletter"
+              className="inline-block pt-2 font-label text-label-sm uppercase tracking-widest text-muted-ochre hover:text-earth-brown"
+            >
+              View subscribers →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Split */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Recent Bookings */}
@@ -209,7 +320,7 @@ export default async function AdminDashboardPage() {
                   {recentBookings.length === 0 ? (
                     <tr>
                       <td colSpan={4} className="py-10 text-center text-on-surface-variant">
-                        No bookings yet — you will see them here when they arrive.
+                        No bookings yet. They will show up here as they arrive.
                       </td>
                     </tr>
                   ) : (

@@ -1,27 +1,34 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
+import { getSiteImages } from '@/lib/site-images';
 
 export const metadata: Metadata = {
   title: 'About Bosco',
   description:
-    'About Bosco Okema — Ugandan musician, cultural educator and performer. Learn the story behind the music.',
+    'About Bosco Okema, a Ugandan musician, cultural educator and performer. The story behind the music.',
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const cmsSections = await getCmsSections('about');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
+  const images = await getSiteImages();
+
   return (
     <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24 bg-deep-charcoal text-warm-ivory overflow-hidden relative">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=1600&q=80"
-            alt="Bosco Okema portrait"
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-deep-charcoal/40 via-deep-charcoal/60 to-deep-charcoal" />
-        </div>
+      <section className="relative min-h-[70vh] md:min-h-[84vh] flex flex-col justify-center pt-32 pb-16 md:pb-24 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia
+          slug="about"
+          defaultImage="/OKema/pic2.jpeg"
+          defaultOverlay={40}
+          gradient="from-deep-charcoal/40 via-deep-charcoal/60 to-deep-charcoal"
+        />
         <div className="relative z-10 container-x text-center max-w-4xl">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            ABOUT
+        
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-8">
             I am Bosco.
@@ -36,10 +43,10 @@ export default function AboutPage() {
       <section className="section-y">
         <div className="container-x grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
           <div className="md:col-span-5 order-2 md:order-1">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-tl-3xl rounded-br-3xl">
+            <div className="relative aspect-[2/3] overflow-hidden rounded-tl-3xl rounded-br-3xl">
               <img
-                src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1000&q=80"
-                alt="Bosco playing Adungu"
+                src={images['about-story'].url}
+                alt={images['about-story'].alt}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -53,22 +60,22 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-6 font-body text-body-md md:text-body-lg text-on-surface-variant leading-relaxed">
               <p>
-                I grew up in a home where music was not something you turned on — it was something
-                you did. My grandfather played the Adungu, my mother sang while she cooked, and
-                the children in our village danced when the drums started at sunset. Music was how
-                we said hello, how we said goodbye, and how we told stories we could not put into
+                I grew up in a home where music was not something you turned on. It was something
+                you did. My grandfather played the Adungu, my mother sang while she cooked, and the
+                children in our village danced when the drums started at sunset. Music was how we
+                said hello, how we said goodbye, and how we told the stories we could not put into
                 words.
               </p>
               <p>
-                As I grew older, I realized that this music — the music of my home — was something
-                many people had never heard. I began playing in schools, then in community
-                centers, then at festivals, then on stages far from Uganda. And everywhere I went,
-                the same thing happened: people leaned in. They listened. They joined in.
+                As I grew older I realised that this music, the music of my own home, was something
+                many people had never heard. I started playing in schools, then in community
+                centres, then at festivals, then on stages far from Uganda. And everywhere I went
+                the same thing happened. People leaned in. They listened. They joined in.
               </p>
               <p>
-                That is when I understood: my job is not just to perform. It is to create a space
-                where culture becomes a conversation — not something behind glass in a museum, but
-                something alive, that we all get to make together.
+                That is when I understood what my job really is. It is not only to perform. It is to
+                make a space where culture becomes a conversation. Not something behind glass in a
+                museum, but something alive that we all get to make together.
               </p>
             </div>
           </div>
@@ -77,7 +84,7 @@ export default function AboutPage() {
 
       <section className="section-y bg-surface-container">
         <div className="container-x">
-          <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-14">
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               WHAT I BELIEVE
             </div>
@@ -95,7 +102,7 @@ export default function AboutPage() {
               {
                 title: 'Culture is living.',
                 description:
-                  'It grows, it changes, it travels — and that is how it stays alive. Tradition is not a museum. It is a conversation.',
+                  'It grows, it changes, it travels, and that is how it stays alive. Tradition is not a museum. It is a conversation.',
               },
               {
                 title: 'The audience is half the band.',
@@ -131,13 +138,13 @@ export default function AboutPage() {
                 room playing the Adungu for someone who has not heard a live song in years.
               </p>
               <p>
-                These seem like very different rooms. But to me, they are the same work — bringing
-                music to the places where it is needed, using it to connect people who might not
-                otherwise find a reason to talk.
+                These look like very different rooms. To me they are the same work though: taking
+                music to the places where it is needed, and using it to connect people who might
+                never otherwise find a reason to talk to each other.
               </p>
               <p>
-                If any of this resonates — whether you are a teacher, an event organizer, a
-                festival programmer, or someone who just loves a good song &mdash; I would love to hear
+                If any of this sounds familiar, whether you are a teacher, an event organiser, a
+                festival programmer, or simply someone who loves a good song, I would love to hear
                 from you.
               </p>
             </div>
@@ -151,19 +158,22 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="md:col-span-5 md:col-start-8 grid grid-cols-2 gap-3 md:gap-4">
-            {[
-              'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80',
-              'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=600&q=80',
-              'https://images.unsplash.com/photo-1516307365426-bea591f05011?w=600&q=80',
-              'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80',
-            ].map((src, i) => (
-              <div
-                key={i}
-                className={`relative overflow-hidden aspect-square ${i % 2 === 1 ? 'mt-12' : ''}`}
-              >
-                <img src={src} alt="" className="w-full h-full object-cover" />
-              </div>
-            ))}
+            {['about-collage-1', 'about-collage-2', 'about-collage-3', 'about-collage-4'].map(
+              (key, i) => (
+                <div
+                  key={key}
+                  className={`relative overflow-hidden aspect-square ${i % 2 === 1 ? 'mt-12' : ''}`}
+                >
+                  {images[key].url ? (
+                    <img
+                      src={images[key].url}
+                      alt={images[key].alt}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : null}
+                </div>
+              )
+            )}
           </div>
         </div>
       </section>
@@ -174,7 +184,7 @@ export default function AboutPage() {
             &ldquo;The song is never finished. It is only waiting for the next person to sing it.&rdquo;
           </blockquote>
           <div className="mt-8 font-label text-label-sm uppercase tracking-widest text-muted-ochre">
-            — A saying from my grandfather
+            A saying from my grandfather
           </div>
         </div>
       </section>

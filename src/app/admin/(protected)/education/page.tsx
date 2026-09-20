@@ -64,7 +64,7 @@ export default async function AdminEducationPage() {
             Education Programs
           </h1>
           <p className="font-body text-body-md text-on-surface-variant mt-2 max-w-2xl">
-            Configure School Residencies, Elderly Visits, workshops and community offerings. Each program is CMS-driven — content, features, formats and CTA are editable here.
+            Configure School Residencies, Elderly Visits, workshops and community offerings. Each program is CMS-driven, so content, features, formats and CTA are all editable here.
           </p>
         </div>
         <button className="px-4 py-2.5 bg-deep-charcoal text-warm-ivory font-label text-label-sm hover:bg-muted-ochre transition-colors uppercase tracking-widest rounded">

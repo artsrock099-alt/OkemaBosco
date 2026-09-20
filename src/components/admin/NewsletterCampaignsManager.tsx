@@ -110,7 +110,7 @@ export default function NewsletterCampaignsManager({ initialCampaigns, subscribe
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-16 text-center text-on-surface-variant">
-                    No campaigns yet — create your first above.
+                    No campaigns yet. Create your first one above.
                   </td>
                 </tr>
               ) : (
@@ -130,14 +130,14 @@ export default function NewsletterCampaignsManager({ initialCampaigns, subscribe
                       </span>
                     </td>
                     <td className="py-4 px-6 text-on-surface-variant">
-                      {c.sentAt ? formatDateShort(c.sentAt) : c.scheduledAt ? formatDateShort(c.scheduledAt) : '—'}
+                      {c.sentAt ? formatDateShort(c.sentAt) : c.scheduledAt ? formatDateShort(c.scheduledAt) : 'N/A'}
                     </td>
                     <td className="py-4 px-6 text-right font-medium text-on-surface">{c.totalSent}</td>
                     <td className="py-4 px-6 text-right text-muted-ochre">
-                      {c.totalSent > 0 ? `${Math.round((c.totalOpened / c.totalSent) * 100)}%` : '—'}
+                      {c.totalSent > 0 ? `${Math.round((c.totalOpened / c.totalSent) * 100)}%` : 'N/A'}
                     </td>
                     <td className="py-4 px-6 text-right text-earth-brown">
-                      {c.totalSent > 0 ? `${Math.round((c.totalClicked / c.totalSent) * 100)}%` : '—'}
+                      {c.totalSent > 0 ? `${Math.round((c.totalClicked / c.totalSent) * 100)}%` : 'N/A'}
                     </td>
                     <td className="py-4 px-6 text-right space-x-3">
                       {c.status === 'DRAFT' && (

@@ -28,6 +28,7 @@ import {
   CreditCard,
   Receipt,
   MessageSquare,
+  Drum,
   Users2,
   Mail,
   Megaphone,
@@ -54,6 +55,8 @@ const navGroups: NavGroup[] = [
     items: [
       { label: 'Pages', href: '/admin/pages', icon: <FileText className="w-5 h-5" /> },
       { label: 'Page Builder', href: '/admin/builder', icon: <BrickWall className="w-5 h-5" /> },
+      { label: 'Hero backgrounds', href: '/admin/heroes', icon: <ImageIcon className="w-5 h-5" /> },
+      { label: 'Site images', href: '/admin/images', icon: <ImageIcon className="w-5 h-5" /> },
       { label: 'Navigation', href: '/admin/navigation', icon: <Navigation className="w-5 h-5" /> },
       { label: 'Site Settings', href: '/admin/settings', icon: <Settings className="w-5 h-5" /> },
     ],
@@ -114,6 +117,7 @@ const navGroups: NavGroup[] = [
     label: 'ENGAGEMENT',
     items: [
       { label: 'Testimonials', href: '/admin/testimonials', icon: <MessageSquare className="w-5 h-5" /> },
+      { label: 'Instruments', href: '/admin/instruments', icon: <Drum className="w-5 h-5" /> },
       {
         label: 'Newsletter',
         href: '/admin/newsletter',

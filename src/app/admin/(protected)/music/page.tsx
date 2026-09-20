@@ -126,7 +126,7 @@ export default async function AdminMusicPage() {
                           Single
                         </span>
                       ) : (
-                        <span>{t.album?.title || '—'}</span>
+                        <span>{t.album?.title || 'N/A'}</span>
                       )}
                     </td>
                     <td className="py-4 px-6 text-on-surface-variant font-label text-label-sm tabular-nums">

@@ -4,21 +4,23 @@ import PageBuilder from '@/components/admin/PageBuilder';
 
 export const metadata = { title: 'Page Builder' };
 
-export default async function AdminBuilderPage({ params }: { params: { slug: string } }) {
+export default async function AdminBuilderPage({ params }: { params: { slug: string[] } }) {
+  const slug = Array.isArray(params.slug) ? params.slug.join('/') : String(params.slug);
+
   let page = await prisma.page.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: { sections: { orderBy: { order: 'asc' } } },
   });
 
   if (!page) {
     page = {
       id: 'temp',
-      title: params.slug === 'home' ? 'Homepage' : params.slug.charAt(0).toUpperCase() + params.slug.slice(1).replace(/-/g, ' '),
-      slug: params.slug,
+      title: slug === 'home' ? 'Homepage' : slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' '),
+      slug,
       description: '',
       status: 'DRAFT',
       publishDate: null,
-      isHomepage: params.slug === 'home',
+      isHomepage: slug === 'home',
       createdAt: new Date(),
       updatedAt: new Date(),
       sections: [],

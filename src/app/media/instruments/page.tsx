@@ -1,32 +1,41 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import InstrumentGallery from '@/components/public/InstrumentGallery';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Instrument Gallery',
   description:
-    'Traditional Ugandan instruments made and played by Bosco Okema — hand-carved tools of sound, plus a look at the music in motion.',
+    'Traditional Ugandan instruments made and played by Bosco Okema. Hand-carved tools of sound, plus a look at the music in motion.',
 };
 
-export default function InstrumentsPage() {
+export default async function InstrumentsPage() {
+  const cmsSections = await getCmsSections('media/instruments');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   return (
     <>
       {/* HEADER */}
-      <section className="pt-32 pb-16 md:pt-40 md:pb-20 bg-deep-charcoal text-warm-ivory overflow-hidden relative">
-        <div className="absolute inset-0 opacity-10">
-          <img src="/OKema/pic8.png" alt="" className="w-full h-full object-cover" />
-        </div>
+      <section className="relative min-h-[62vh] md:min-h-[72vh] flex flex-col justify-center pt-32 pb-16 md:pb-20 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia
+          slug="media/instruments"
+          defaultImage="/OKema/pic8.png"
+          defaultOverlay={15}
+          gradient="from-deep-charcoal via-deep-charcoal/40 to-transparent"
+        />
         <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            MEDIA • INSTRUMENT GALLERY
+        
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             The Instruments
           </h1>
           <p className="font-body text-body-md md:text-body-lg text-surface-variant max-w-2xl mx-auto">
-            From wood, gourds and animal skins to cast-off housewares, Bosco builds and plays his
-            own traditional Ugandan instruments — beautiful, one-of-a-kind pieces of art. Keep
-            scrolling to see the collection pop to life.
+            Bosco builds and plays his own traditional Ugandan instruments from wood, gourds and
+            animal skins. Each one is a beautiful, one-off piece of art. Keep scrolling to see the
+            collection come to life.
           </p>
         </div>
       </section>
@@ -34,7 +43,7 @@ export default function InstrumentsPage() {
       {/* INSTRUMENTS SLIDESHOW */}
       <InstrumentGallery />
 
-      {/* VIDEO — BELOW THE ANIMATION */}
+      {/* VIDEO, BELOW THE ANIMATION */}
       <section className="section-y bg-surface-container" id="watch">
         <div className="container-x">
           <div className="text-center mb-10 md:mb-14">

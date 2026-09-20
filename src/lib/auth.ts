@@ -20,6 +20,11 @@ declare module 'next-auth' {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Self-hosted deployments (Docker, VPS, local builds) are not detected as
+  // trusted by Auth.js, which otherwise rejects every request with
+  // "UntrustedHost". Vercel sets this automatically; everywhere else it has to
+  // be declared.
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {

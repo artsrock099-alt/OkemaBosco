@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import BackButton from '@/components/public/BackButton';
 
 /**
  * Renders the public Header + Footer only on public (non-admin) routes.
@@ -11,10 +12,12 @@ export default function PublicFrame({
   children,
   header,
   footer,
+  newsletter,
 }: {
   children: React.ReactNode;
   header: React.ReactNode;
   footer: React.ReactNode;
+  newsletter?: React.ReactNode;
 }) {
   const pathname = usePathname() || '';
   const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/');
@@ -26,7 +29,9 @@ export default function PublicFrame({
   return (
     <>
       {header}
+      <BackButton />
       <main className="min-h-screen">{children}</main>
+      {newsletter}
       {footer}
     </>
   );

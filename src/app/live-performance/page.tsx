@@ -1,10 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
+import { getSiteImages } from '@/lib/site-images';
 
 export const metadata: Metadata = {
   title: 'Live Performance',
   description:
-    'Live performances of Ugandan traditional and contemporary music — solo, small ensemble or full band for concerts, festivals, weddings and cultural celebrations.',
+    'Live performances of Ugandan traditional and contemporary music. Solo, small ensemble or full band for concerts, festivals, weddings and cultural celebrations.',
 };
 
 const formats = [
@@ -16,7 +20,7 @@ const formats = [
   },
   {
     title: 'Small Ensemble',
-    blurb: '2–4 performers',
+    blurb: '2 to 4 performers',
     description:
       'A richer sound with additional percussion, vocals and melodic instruments. Ideal for mid-size venues and community events.',
   },
@@ -24,43 +28,117 @@ const formats = [
     title: 'Full Band',
     blurb: '5+ performers',
     description:
-      'The full experience — traditional and modern instrumentation, harmonies, rhythm section. For festivals, large halls and major events.',
+      'The full experience, with traditional and modern instrumentation, harmonies and a rhythm section. For festivals, large halls and major events.',
   },
 ];
 
-const idealFor = [
-  'Concerts & Recitals',
-  'Festivals & Cultural Days',
-  'Weddings & Ceremonies',
-  'Fundraisers & Galas',
-  'Churches & Places of Worship',
-  'Community Events',
-  'Private Parties & Celebrations',
-  'Corporate & Organizational Events',
+const setLengths = [
+  { time: '20 min', label: 'Feature Set' },
+  { time: '45 min', label: 'Standard Show' },
+  { time: '60 min', label: 'Extended Set' },
+  { time: '90 min', label: 'Full Concert' },
 ];
 
-export default function LivePerformancePage() {
+const included = [
+  {
+    title: 'Solo or Ensemble',
+    description:
+      'Performed solo, or with percussion and supporting musicians, scaled to your event size and budget.',
+  },
+  {
+    title: 'Story & Sound',
+    description:
+      'Each piece comes with context: where the instrument is from, what it means and how it is played. Music as education.',
+  },
+  {
+    title: 'Audience Connection',
+    description:
+      'Live demonstration segments, call-and-response and time for questions. Audiences leave as participants, not spectators.',
+  },
+  {
+    title: 'Flexible Length',
+    description:
+      'From a 20 minute feature set to a full 90 minute concert with intermission. We fit your programme, not the other way around.',
+  },
+];
+
+const venues = [
+  {
+    title: 'Community Events & Festivals',
+    description:
+      'Outdoor stages, heritage celebrations and world music showcases, with high-energy sets plus quieter pieces that draw listeners in.',
+    tags: 'Outdoor · Festival · Heritage',
+  },
+  {
+    title: 'Museums, Libraries & Galleries',
+    description:
+      'Exhibit openings, artist talks and educational series, where the music sits alongside talks about craftsmanship, oral tradition and cultural migration.',
+    tags: 'Education · Culture · Q&A',
+  },
+  {
+    title: 'Private Events & Receptions',
+    description:
+      'Weddings, dinners, fundraisers and corporate events, where live thumb piano and adungu add warmth without overpowering the conversation.',
+    tags: 'Weddings · Corporate · Intimate',
+  },
+  {
+    title: 'Faith Communities & Cultural Centres',
+    description:
+      'Music that honours tradition and builds bridges, for interfaith events, diaspora celebrations and community healing gatherings.',
+    tags: 'Interfaith · Community · Healing',
+  },
+];
+
+const instrumentsPlayed = [
+  {
+    name: 'Thumb Piano',
+    subtitle: 'The kalimba',
+    image: '/OKema/pic7.png',
+    description:
+      'Soft, bell-like tones that layer and loop. Intimate and meditative, with each note ringing out clearly, music you can feel in your chest.',
+  },
+  {
+    name: 'Adungu',
+    subtitle: 'Ugandan bow harp',
+    image: '/OKema/pic5.png',
+    description:
+      'A flowing, harp-like sound that fills a room without amplification. The adungu carries centuries of oral tradition in every string it vibrates.',
+  },
+  {
+    name: 'Percussion',
+    subtitle: 'The heartbeat',
+    image: '/OKema/pic9.png',
+    description:
+      'Traditional rhythms that ground the melodies and invite movement, the pulse that connects every listener to something deeper than words.',
+  },
+];
+
+export default async function LivePerformancePage() {
+  const cmsSections = await getCmsSections('live-performance');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
+  const images = await getSiteImages();
+
   return (
     <>
-      <section className="relative min-h-[70vh] flex flex-col justify-end pt-32 pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80"
-            alt="Live music performance stage with warm lighting"
-            className="w-full h-full object-cover opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/60 to-transparent" />
-        </div>
+      <section className="relative min-h-[78vh] md:min-h-[88vh] flex flex-col justify-end pt-32 pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia
+          slug="live-performance"
+          defaultImage="/OKema/pic3.jpeg"
+          defaultOverlay={50}
+          gradient="from-deep-charcoal via-deep-charcoal/60 to-transparent"
+        />
         <div className="relative z-10 container-x max-w-4xl">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            LIVE PERFORMANCE
+          
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-8">
             Live music. Real connection.
           </h1>
           <p className="font-body text-body-md md:text-body-lg text-surface-variant max-w-2xl mb-8">
-            From the traditional Adungu harp to contemporary original compositions — experience
-            the sound of Uganda live. Solo, small ensemble or full band.
+            From intimate gatherings to cultural festivals, the sound of the thumb piano, adungu
+            and African rhythms carried to any stage. Music, storytelling and audience connection
+            in one experience.
           </p>
           <Link href="/book" className="btn-primary-light inline-flex">
             REQUEST A PERFORMANCE
@@ -79,23 +157,27 @@ export default function LivePerformancePage() {
             </h2>
             <div className="space-y-6 font-body text-body-md text-on-surface-variant">
               <p>
-                Bosco&apos;s performances draw from the deep wellsprings of Ugandan traditional music
-                and storytelling — reimagined with a contemporary sensibility that speaks to
-                audiences of every background.
+                Bosco&apos;s performances draw on the deep wellsprings of Ugandan traditional music
+                and storytelling, then shape them for a room that has never heard them before.
               </p>
               <p>
-                Rooted in the sounds of the Adungu (bow harp), thumb piano, percussion, and voice
-                — each performance is an invitation into a living musical culture, where songs
-                carry stories, rhythms carry joy, and the audience becomes part of the music.
+                Rooted in the sound of the Adungu (bow harp), thumb piano, percussion and voice,
+                every performance is an invitation into a living musical culture. Songs carry
+                stories, rhythms carry joy, and the audience ends up part of the music.
+              </p>
+              <p>
+                Every piece comes with its context: where the instrument is from, what it means,
+                and how it is played. The music does the entertaining, and it teaches at the same
+                time.
               </p>
             </div>
           </div>
-          <div className="md:col-span-5 md:col-start-8">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-tl-3xl rounded-br-3xl">
+          <div className="md:col-span-6 md:col-start-7">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-tl-3xl rounded-br-3xl">
               <img
-                src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=1000&q=80"
-                alt="Hands playing traditional stringed instrument"
-                className="w-full h-full object-cover"
+                src={images['live-performance-story'].url}
+                alt={images['live-performance-story'].alt}
+                className="w-full h-full object-cover object-top"
               />
             </div>
           </div>
@@ -104,7 +186,7 @@ export default function LivePerformancePage() {
 
       <section className="section-y bg-surface-container">
         <div className="container-x">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               PERFORMANCE FORMATS
             </div>
@@ -126,34 +208,122 @@ export default function LivePerformancePage() {
               </div>
             ))}
           </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 md:mt-10">
+            {setLengths.map((length) => (
+              <div key={length.label} className="card-surface p-6 text-center">
+                <div className="font-display text-headline-md md:text-headline-lg text-on-surface leading-none">
+                  {length.time}
+                </div>
+                <div className="font-label text-label-sm uppercase tracking-widest text-on-surface-variant mt-3">
+                  {length.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="section-y">
-        <div className="container-x card-surface p-8 md:p-16">
+        <div className="container-x">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
+            <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
+              WHAT A PERFORMANCE INCLUDES
+            </div>
+            <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
+              Every set is intentional.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            {included.map((item) => (
+              <div key={item.title} className="card-surface p-8 flex flex-col h-full">
+                <h3 className="font-headline text-headline-md text-on-surface mb-4">{item.title}</h3>
+                <p className="font-body text-body-md text-on-surface-variant flex-1">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-y bg-surface-container-low">
+        <div className="container-x card-surface p-8 md:p-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-                IDEAL FOR
+                WHERE WE PLAY
               </div>
               <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight mb-8 leading-tight">
-                The perfect soundtrack for your moment.
+                Every stage has a story.
               </h2>
               <p className="font-body text-body-md text-on-surface-variant mb-6">
-                Every performance is tailored to the occasion — whether you need quiet, ambient
-                sets, energetic dance music, or a full concert program.
+                From outdoor festival stages to intimate rooms. Every performance is shaped around
+                the occasion, whether you need quiet ambient sets, energetic dance music or a full
+                concert programme.
               </p>
             </div>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {idealFor.map((s) => (
-                <li key={s} className="flex items-start gap-3 p-4 bg-surface-container rounded">
+            <ul className="grid grid-cols-1 gap-3">
+              {venues.map((venue) => (
+                <li key={venue.title} className="flex items-start gap-3 p-4 bg-surface-container rounded">
                   <svg className="w-5 h-5 text-muted-ochre flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                   </svg>
-                  <span className="font-body text-body-md text-on-surface">{s}</span>
+                  <div>
+                    <div className="font-headline text-body-lg text-on-surface">{venue.title}</div>
+                    <p className="font-body text-body-md text-on-surface-variant mt-1">
+                      {venue.description}
+                    </p>
+                    <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mt-2">
+                      {venue.tags}
+                    </div>
+                  </div>
                 </li>
               ))}
             </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-y">
+        <div className="container-x">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
+            <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
+              THE INSTRUMENTS
+            </div>
+            <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
+              Ancient voices, living sound.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {instrumentsPlayed.map((instrument) => (
+              <div key={instrument.name} className="group">
+                <div className="relative aspect-[4/3] overflow-hidden bg-surface-container mb-5">
+                  <img
+                    src={instrument.image}
+                    alt={instrument.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-2">
+                  {instrument.subtitle}
+                </div>
+                <h3 className="font-headline text-headline-md text-on-surface mb-3">{instrument.name}</h3>
+                <p className="font-body text-body-md text-on-surface-variant">{instrument.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-y bg-deep-charcoal text-warm-ivory">
+        <div className="container-x max-w-4xl text-center">
+          <blockquote className="font-display text-headline-lg-mobile md:text-headline-lg text-warm-ivory leading-tight italic">
+            &ldquo;Together they create a sound that is both ancient and new. Audiences describe it
+            as water, memory, and music you can feel.&rdquo;
+          </blockquote>
+          <div className="mt-8 font-label text-label-sm uppercase tracking-widest text-muted-ochre">
+            Okema Bosco, on live African music
           </div>
         </div>
       </section>
@@ -162,8 +332,8 @@ export default function LivePerformancePage() {
         <div className="container-x">
           <div className="relative aspect-video w-full max-w-5xl mx-auto overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600&q=80"
-              alt="Live performance thumbnail"
+              src={images['live-performance-video-thumbnail'].url}
+              alt={images['live-performance-video-thumbnail'].alt}
               className="w-full h-full object-cover"
             />
             <button className="absolute inset-0 flex items-center justify-center group">
@@ -183,13 +353,14 @@ export default function LivePerformancePage() {
       </section>
 
       <section className="section-y">
-        <div className="container-x card-surface p-10 md:p-20 text-center">
+        <div className="container-x card-surface p-8 md:p-12 text-center">
           <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight mb-8 max-w-3xl mx-auto">
             Ready to bring live Ugandan music to your event?
           </h2>
           <p className="font-body text-body-lg text-on-surface-variant mb-10 max-w-xl mx-auto">
-            Tell Bosco about your vision. He will respond with format options, availability and
-            tailored pricing.
+            Tell me about your audience, your space and what kind of set fits best, and I will come
+            back with format options, availability and tailored pricing. Every booking is a
+            collaboration.
           </p>
           <Link href="/book" className="btn-primary">
             REQUEST A PERFORMANCE

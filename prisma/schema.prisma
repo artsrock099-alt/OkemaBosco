@@ -674,6 +674,41 @@ model SiteSettings {
 }
 
 // ==========================================
+// HERO BACKGROUNDS
+// ==========================================
+
+/// Background image or video for the hero of a built-in page, keyed by the
+/// page's slug (for example "events" or "media/photos"). Empty values mean the
+/// page keeps whatever background its layout ships with.
+model HeroBackground {
+  id        String   @id @default(cuid())
+  pageSlug  String   @unique
+  imageUrl  String?
+  videoUrl  String?
+  overlay   Int      @default(50)
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// SITE IMAGES
+// ==========================================
+
+/// A single picture inside a coded page layout, keyed by a stable slot name
+/// (for example "about-story" or "school-residency-gallery-3"). An empty url
+/// means the slot falls back to the photo the layout ships with.
+model SiteImage {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  pageSlug  String
+  label     String
+  url       String?
+  altText   String?
+  updatedAt DateTime @updatedAt
+
+  @@index([pageSlug])
+}
+
+// ==========================================
 // AUDIT LOG
 // ==========================================
 

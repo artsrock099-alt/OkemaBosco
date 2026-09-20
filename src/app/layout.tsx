@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
 import { Header } from '@/components/public/Header';
 import { Footer } from '@/components/public/Footer';
+import NewsletterSection from '@/components/public/NewsletterSection';
 import PublicFrame from '@/components/PublicFrame';
+import AdminShortcut from '@/components/AdminShortcut';
 import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://boscookema.com'),
   title: {
-    default: 'Bosco Okema — Ugandan Musician • Cultural Educator • Performer',
+    default: 'Bosco Okema, Ugandan Musician and Cultural Educator',
     template: '%s | Bosco Okema',
   },
   description:
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
     'live performance Kampala',
   ],
   openGraph: {
-    title: 'Bosco Okema — Ugandan Musician • Cultural Educator • Performer',
+    title: 'Bosco Okema, Ugandan Musician and Cultural Educator',
     description:
       'Experience the music, stories and traditions of Uganda through live performance, cultural education and meaningful community experiences.',
     url: 'https://boscookema.com',
@@ -33,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Bosco Okema — Ugandan Musician • Cultural Educator • Performer',
+    title: 'Bosco Okema, Ugandan Musician and Cultural Educator',
     description:
       'Experience the music, stories and traditions of Uganda through live performance and cultural education.',
   },
@@ -58,9 +60,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-background text-on-background font-body text-body-md overflow-x-hidden selection:bg-muted-ochre selection:text-white">
-        <PublicFrame header={<Header />} footer={<Footer />}>
+        <PublicFrame header={<Header />} footer={<Footer />} newsletter={<NewsletterSection />}>
           {children}
         </PublicFrame>
+        <AdminShortcut />
       </body>
     </html>
   );

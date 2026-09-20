@@ -34,8 +34,8 @@ async function main() {
       id: 'default',
       siteName: 'Bosco Okema',
       tagline: 'Ugandan Musician • Cultural Educator • Performer',
-      contactEmail: 'hello@boscookema.com',
-      contactPhone: '+256 700 000 000',
+      contactEmail: 'okemabosco18@gmail.com',
+      contactPhone: '+1 (240) 926-0614',
       contactLocation: 'Kampala, Uganda',
       footerText:
         'Ugandan Musician • Cultural Educator • Performer\nExperience the music, stories and traditions of Uganda.',
@@ -57,38 +57,60 @@ async function main() {
 
   await prisma.navigationItem.deleteMany({ where: { navigationId: mainNav.id } });
 
-  const navLabels: [string, string, string?][] = [
-    ['HOME', '/', undefined],
-    ['EVENTS', '/events', undefined],
-    ['EDUCATION', '/education', undefined],
-    ['LISTEN', '/listen', undefined],
-    ['MEDIA', '/media', undefined],
-    ['ABOUT', '/about', undefined],
-    ['CONTACT', '/contact', undefined],
+  const navTree: { label: string; url: string; children?: { label: string; url: string }[] }[] = [
+    { label: 'HOME', url: '/' },
+    { label: 'EVENTS', url: '/events' },
+    {
+      label: 'EDUCATION',
+      url: '/education',
+      children: [
+        { label: 'School Residency', url: '/education/school-residency' },
+        { label: 'Elderly Visits', url: '/education/elderly-visits' },
+        { label: 'Live Performance', url: '/live-performance' },
+      ],
+    },
+    { label: 'LISTEN', url: '/listen' },
+    { label: 'MEDIA', url: '/media' },
+    { label: 'ABOUT', url: '/about' },
+    { label: 'CONTACT', url: '/contact' },
   ];
 
   let order = 0;
-  for (const [label, href] of navLabels) {
-    await prisma.navigationItem.create({
+  for (const item of navTree) {
+    const parent = await prisma.navigationItem.create({
       data: {
         navigationId: mainNav.id,
-        label,
-        url: href,
+        label: item.label,
+        url: item.url,
         order: order++,
         isVisible: true,
       },
     });
-  }
-  console.log('  ✅ Navigation:', navLabels.length, 'items');
 
-  // ============== SOCIAL LINKS ==============
+    let childOrder = 0;
+    for (const child of item.children || []) {
+      await prisma.navigationItem.create({
+        data: {
+          navigationId: mainNav.id,
+          label: child.label,
+          url: child.url,
+          order: childOrder++,
+          isVisible: true,
+          parentId: parent.id,
+        },
+      });
+    }
+  }
+  console.log('  ✅ Navigation:', navTree.length, 'items');
+
+  // ============== SOCIAL LINKS (real profiles) ==============
   await prisma.socialLink.deleteMany({});
   const socials = [
-    { platform: 'Instagram', url: '#', icon: 'instagram' },
-    { platform: 'Facebook', url: '#', icon: 'facebook' },
-    { platform: 'YouTube', url: '#', icon: 'youtube' },
-    { platform: 'Spotify', url: '#', icon: 'spotify' },
-    { platform: 'TikTok', url: '#', icon: 'tiktok' },
+    { platform: 'Instagram', url: 'https://www.instagram.com/okemabosco18/', icon: 'instagram' },
+    { platform: 'Facebook', url: 'https://www.facebook.com/okema.bosco.9/', icon: 'facebook' },
+    { platform: 'YouTube', url: 'https://www.youtube.com/@okemabosco6009', icon: 'youtube' },
+    { platform: 'TikTok', url: 'https://www.tiktok.com/@okemabosco7', icon: 'tiktok' },
+    { platform: 'WhatsApp', url: 'https://wa.me/12409260614', icon: 'whatsapp' },
   ];
   for (const [i, s] of socials.entries()) {
     await prisma.socialLink.create({
@@ -97,41 +119,128 @@ async function main() {
   }
   console.log('  ✅ Social links');
 
+  // ============== INSTRUMENT PHOTOS (registered as reusable media) ==============
+  const instrumentPhotos = [
+    { filename: 'pic5.png', url: '/OKema/pic5.png', alt: 'Adungu bow harp with a gourd resonator' },
+    { filename: 'pic7.png', url: '/OKema/pic7.png', alt: 'Thumb piano with metal tines on a wooden board' },
+    { filename: 'pic9.png', url: '/OKema/pic9.png', alt: 'Dried gourd shells used for percussion' },
+    { filename: 'pic6.png', url: '/OKema/pic6.png', alt: 'Handmade stringed instrument built by Bosco Okema' },
+    { filename: 'IMG_4864.JPG', url: '/OKema/IMG_4864.JPG', alt: 'Bosco Okema singing during a live performance' },
+  ];
+
+  // ============== PHOTO LIBRARY (every photo Bosco supplied) ==============
+  // These are real Media records, so they appear in Admin -> Media -> Photos
+  // and can be dropped into any section from the Page Builder. The gallery on
+  // /media/photos reads this list, so adding or removing a photo here (or in
+  // the admin) changes that page.
+  const libraryPhotos: { filename: string; alt: string }[] = [
+    { filename: 'AboutOkema.jpg', alt: 'Portrait of Bosco Okema with his instrument' },
+    { filename: 'pic4.jpeg', alt: 'Bosco Okema with his instruments' },
+    { filename: 'Pic1.jpeg', alt: 'Bosco Okema performing live' },
+    { filename: 'pic2.jpeg', alt: 'Bosco Okema holding a traditional Adungu instrument' },
+    { filename: 'pic3.jpeg', alt: 'Bosco Okema on stage' },
+    { filename: 'culturePerformance.JPG', alt: 'Bosco Okema in cultural performance' },
+    { filename: 'liveperformance1.JPG', alt: 'Bosco Okema performing live' },
+    { filename: 'liveperformance2.JPG', alt: 'Bosco Okema performing with his band' },
+    { filename: 'schoolresidency2.jpg', alt: 'Children learning traditional music' },
+    { filename: 'schoolresidency3.jpg', alt: 'Students learning the instruments' },
+    { filename: 'schoolresidency1.jpeg', alt: 'Music session in a school hall' },
+    { filename: 'schoolresidency4.jpeg', alt: 'Classroom music workshop' },
+    { filename: 'schoolresidency6.jpeg', alt: 'Hands-on instrument session with students' },
+    { filename: 'schoolresidency8.jpeg', alt: 'Students gathered around traditional instruments' },
+    { filename: 'schoolresidency9.jpeg', alt: 'Students joining in with percussion' },
+    { filename: 'schoolresidency10.jpeg', alt: 'A whole class taking part' },
+    { filename: 'schoolresidency12.jpeg', alt: 'A student trying a traditional instrument' },
+    { filename: 'schoolresidency13.jpeg', alt: 'Classroom music session in progress' },
+    { filename: 'schoolresidency14.jpeg', alt: 'Students singing together during a residency' },
+    { filename: 'schoolresidency15.jpeg', alt: 'Residency workshop in a school' },
+    { filename: 'schoolresidency7.jpeg', alt: 'Bosco Okema leading a school workshop' },
+    { filename: 'schoolresidency5.jpeg', alt: 'Students taking part in a music workshop' },
+    { filename: 'PrimRoseElders6.jpeg', alt: 'Residents enjoying a live music visit' },
+    { filename: 'PrimRoseElders4.jpeg', alt: 'Residents sharing a musical moment' },
+    { filename: 'PrimRoseElders9.jpeg', alt: 'Elderly residents clapping along' },
+    { filename: 'ElderFlower1.jpeg', alt: 'Bosco Okema playing music for residents' },
+  ];
+
+  const mimeFor = (filename: string) =>
+    filename.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg';
+
+  const photoIds: Record<string, string> = {};
+  for (const photo of instrumentPhotos) {
+    const existing = await prisma.media.findFirst({ where: { url: photo.url } });
+    const media =
+      existing ??
+      (await prisma.media.create({
+        data: {
+          type: 'IMAGE',
+          title: photo.alt,
+          filename: photo.filename,
+          url: photo.url,
+          mimeType: mimeFor(photo.filename),
+          size: 0,
+          altText: photo.alt,
+        },
+      }));
+    photoIds[photo.url] = media.id;
+  }
+
+  for (const photo of libraryPhotos) {
+    const url = `/OKema/${photo.filename}`;
+    const existing = await prisma.media.findFirst({ where: { url } });
+    if (existing) continue;
+    await prisma.media.create({
+      data: {
+        type: 'IMAGE',
+        title: photo.alt,
+        filename: photo.filename,
+        url,
+        mimeType: mimeFor(photo.filename),
+        size: 0,
+        altText: photo.alt,
+      },
+    });
+  }
+
   // ============== SAMPLE INSTRUMENTS ==============
   const instruments = [
     {
       name: 'Adungu',
       slug: 'adungu',
       description:
-        'A traditional Ugandan bow harp with nine strings, believed to be the musical voice of ancestors. Held in the lap and played with both hands.',
+        'A nine-string bow harp and the instrument Bosco grew up with. The gourd body is wrapped in animal skin and the harp is held in the lap, with one hand plucking the melody while the other adds the bass line.',
+      imageId: photoIds['/OKema/pic5.png'],
       order: 0,
     },
     {
       name: 'Thumb Piano',
       slug: 'thumb-piano',
       description:
-        'Also called mbira or akogo — a gentle melodic instrument played with the thumbs, used in ceremonies and storytelling.',
+        'Also called mbira or akogo. Metal tines are fixed to a wooden board and pressed with the thumbs to make a soft, repeating melody that sits under the voice. It is often played at ceremonies and while telling stories.',
+      imageId: photoIds['/OKema/pic7.png'],
       order: 1,
     },
     {
       name: 'Percussion',
       slug: 'percussion',
       description:
-        'Drums, shakers, bells and wood blocks that carry rhythm — the heartbeat of every Ugandan ensemble.',
+        'Drums, shakers, bells, gourds and wooden blocks. Percussion holds the pulse of every ensemble and is usually what gets a room up on its feet, from a school hall to a festival stage.',
+      imageId: photoIds['/OKema/pic9.png'],
       order: 2,
     },
     {
       name: 'Guitar',
       slug: 'guitar',
       description:
-        'A modern addition used to blend traditional tunings with contemporary songwriting and arrangement.',
+        'A modern addition to a traditional line-up. Bosco uses the guitar to blend Ugandan tunings with contemporary songwriting, and it carries many of the songs he writes today.',
+      imageId: photoIds['/OKema/pic6.png'],
       order: 3,
     },
     {
       name: 'Voice',
       slug: 'voice',
       description:
-        'Call-and-response songs, lullabies, storytelling and praise singing — carried on the human voice above every instrument.',
+        'Call-and-response songs, lullabies, praise singing and storytelling, all carried by the human voice above the instruments. In most performances the audience ends up singing the responses back.',
+      imageId: photoIds['/OKema/IMG_4864.JPG'],
       order: 4,
     },
   ];
@@ -156,7 +265,7 @@ async function main() {
   const now = new Date();
   const events = [
     {
-      title: 'Kampala Arts Festival — Main Stage',
+      title: 'Kampala Arts Festival, Main Stage',
       slug: 'kampala-arts-festival-main-stage',
       categorySlug: 'festival',
       days: 30,
@@ -168,31 +277,31 @@ async function main() {
       isFeatured: true,
     },
     {
-      title: 'Makerere University — Traditional Music Workshop',
+      title: 'Makerere University Traditional Music Workshop',
       slug: 'makerere-university-traditional-music-workshop',
       categorySlug: 'workshop',
       days: 54,
       time: '10:00',
-      venue: 'Makerere University — School of Performing Arts',
+      venue: 'Makerere University, School of Performing Arts',
       location: 'Kampala, Uganda',
       shortDescription:
         'A day-long hands-on workshop for music students on Adungu technique, call-and-response, and Ugandan musical storytelling.',
       isFeatured: false,
     },
     {
-      title: 'Nile Resort — End-of-Year Gala',
+      title: 'Nile Resort End-of-Year Gala',
       slug: 'nile-resort-end-of-year-gala',
       categorySlug: 'private-event',
       days: 99,
       time: '19:30',
-      venue: 'Nile Resort — Grand Ballroom',
+      venue: 'Nile Resort, Grand Ballroom',
       location: 'Jinja, Uganda',
       shortDescription:
         'An intimate acoustic evening of music and storytelling for resort guests at the annual New Year\u2019s celebration.',
       isFeatured: false,
     },
     {
-      title: 'Entebbe Cultural Center — Community Day',
+      title: 'Entebbe Cultural Center Community Day',
       slug: 'entebbe-cultural-center-community-day',
       categorySlug: 'community',
       days: 138,
@@ -219,7 +328,7 @@ async function main() {
         venue: ev.venue,
         location: ev.location,
         shortDescription: ev.shortDescription,
-        description: `${ev.shortDescription}\n\nJoin Bosco and ensemble for a memorable afternoon or evening of Ugandan music and storytelling. This program features music from the Adungu, thumb piano, guitar, voice, and percussion — as well as stories from the road.`,
+        description: `${ev.shortDescription}\n\nJoin Bosco and the ensemble for an afternoon or evening of Ugandan music and storytelling, with music from the Adungu, thumb piano, guitar, voice and percussion, plus a few stories from the road.`,
         isPublished: true,
         isFeatured: ev.isFeatured,
       },
@@ -238,7 +347,7 @@ async function main() {
       location: 'Gulu, Uganda',
     },
     {
-      title: 'Kampala International School — Residency Week',
+      title: 'Kampala International School Residency Week',
       slug: 'kampala-international-school-residency-week',
       categorySlug: 'school-residency',
       days: 150,
@@ -263,57 +372,25 @@ async function main() {
     });
   }
 
-  // ============== SAMPLE TESTIMONIALS ==============
+  // ============== TESTIMONIALS (from okemabosco.com) ==============
   const testimonials = [
     {
       quote:
-        'Bosco did not just perform for our school — he transformed a week of classes into something my students will remember for the rest of their lives. Every instrument, every story, every song landed.',
-      name: 'Dr. Sarah Namata',
-      organization: 'Kampala International School',
-      role: 'Head of Arts',
+        'Having Okema as a visiting artist was an awesome experience for both me and my students. He kept everything fresh and engaging, and was fully present from start to finish. Every class participated in hands-on exercises, and the level of involvement was incredible. The students absolutely loved it.',
+      name: 'Mr. Gilberto',
+      role: 'Music Teacher',
+      organization: 'A.C. Reynolds Middle School',
       order: 0,
       isFeatured: true,
     },
     {
       quote:
-        'In a room full of people who had barely spoken to each other all year, he had everyone singing, clapping, and smiling within the first five minutes. A rare gift.',
-      name: 'Josephine M.',
-      organization: 'Nile View Assisted Living',
-      role: 'Activities Director',
+        'I am often brought to tears by how beautiful the experience has been for our elders. Okema\u2019s music is unbelievably beautiful, and he makes everything fun and engaging. He is an inspiration to be around, bringing joy, community and healing through his music.',
+      name: 'Annie Spindler',
+      role: 'Founder & Executive Director',
+      organization: 'Elderflower Community',
       order: 1,
-    },
-    {
-      quote:
-        'We booked Bosco for our festival\u2019s headline slot, and he gave the audience everything — and more. The standing ovation lasted ten minutes.',
-      name: 'David Otieno',
-      organization: 'Kampala Arts Festival',
-      role: 'Artistic Director',
-      order: 2,
       isFeatured: true,
-    },
-    {
-      quote:
-        'Gentle, patient, generous with his time and his instrument. My mother has dementia and she sang along — aloud — for the first time in two years. I will never forget that afternoon.',
-      name: 'Amina K.',
-      organization: 'Private Family Booking',
-      role: 'Daughter',
-      order: 3,
-    },
-    {
-      quote:
-        'Bosco bridges the traditional and the contemporary in a way that feels effortless. He is a cultural treasure and exactly the kind of educator the next generation needs.',
-      name: 'Professor Peter Wasswa',
-      organization: 'Makerere University',
-      role: 'School of Performing Arts',
-      order: 4,
-    },
-    {
-      quote:
-        'Professional from the first email to the final encore, kind to every audience member, and a musician of extraordinary depth. Cannot recommend highly enough.',
-      name: 'Hannah and Michael R.',
-      organization: 'Private Wedding',
-      role: 'The Couple',
-      order: 5,
     },
   ];
   await prisma.testimonial.deleteMany({});
@@ -338,7 +415,7 @@ async function main() {
       slug: 'the-story-of-the-adungu',
       cat: 'culture',
       excerpt:
-        'An instrument passed down through generations — how the bow harp carries the voices of my ancestors, and what it means to play it today.',
+        'An instrument passed down through generations, and what it means to play it today.',
       days: 20,
     },
     {
@@ -346,7 +423,7 @@ async function main() {
       slug: 'music-in-the-classroom-five-things-i-learned',
       cat: 'education',
       excerpt:
-        'From the shyest student to the room full of drummers — ten years of school residencies have taught me more than I ever expected.',
+        'From the shyest student to a room full of drummers, ten years of school residencies have taught me more than I ever expected.',
       days: 60,
     },
     {
@@ -400,7 +477,7 @@ async function main() {
       date: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 240),
       url: '#',
       description:
-        'How school residency programs are transforming cultural education — with a case study from Bosco.',
+        'How school residency programs are transforming cultural education, with a case study from Bosco.',
     },
   ];
   await prisma.press.deleteMany({});
@@ -487,7 +564,7 @@ async function main() {
         location: b.location,
         expectedAudience: 'Medium (50-200)',
         eventDescription:
-          'Sample booking created from seed data — update with real event details.',
+          'Sample booking created from seed data. Update with real event details.',
         customerName: b.name,
         organization: b.org,
         customerEmail: b.email,
@@ -506,7 +583,7 @@ async function main() {
       phone: '+256 700 333 000',
       subject: 'Headline Performance Invitation',
       message:
-        'Hi Bosco — we would love to invite you to headline the main stage at this year\u2019s Acacia Festival. Please send availability and rider details — happy to follow up with a call.',
+        'Hi Bosco, we would love to invite you to headline the main stage at this year\u2019s Acacia Festival. Please send availability and rider details, and I am happy to follow up with a call.',
       isRead: false,
     },
     {
@@ -514,7 +591,7 @@ async function main() {
       email: 'samuel.okello@example.com',
       subject: 'Private Wedding Booking',
       message:
-        'Hi — getting married on the shores of Lake Victoria in October and would love to have you and a small ensemble for the ceremony and dinner. Is this something you do?',
+        'Hi, we are getting married on the shores of Lake Victoria in October and would love to have you and a small ensemble for the ceremony and dinner. Is this something you do?',
       isRead: false,
     },
     {
@@ -546,8 +623,7 @@ async function main() {
   console.log('  ✅ Music platforms');
 
   // ============== PAGES & PAGE SECTIONS (CMS homepage) ==============
-  const heroImage =
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuA-N2I3AaRVr7rcVH8j0HmR3y1rftjbiFXJ-WlsQIdf5MR5RinpR-lNebU_lP8zlO-Dh8kyQT4-RgXxvVVnLEXbRPltYTpZCP-INvfgN3Xx_1cyheFttVPlt5aXb9lWOGa7R39PXEKJcpHcqIYhYSFtQ9SaqNtDbR6Rd_8ljolku2I8Xn_mLNoz-m7tleMdQltbkEoBq-bqdyBFCnplPsLErBRt1E6U42AOUTJb-80rDFn41G8-Xlq9ZA';
+  const heroImage = '/OKema/Pic1.jpeg';
 
   const homePage = await prisma.page.upsert({
     where: { slug: 'home' },
@@ -593,7 +669,7 @@ async function main() {
           'Bosco Okema is a Ugandan musician, performer and cultural educator whose work connects people through music, storytelling and cultural experience.',
           'From classrooms and senior communities to festivals, concerts and special events, Bosco brings the sounds and stories of Uganda to diverse audiences across the globe.',
         ],
-        image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=1000&q=80',
+        image: '/OKema/pic4.jpeg',
         imageAlt: 'Bosco Okema portrait holding traditional Adungu instrument',
         buttons: [{ label: 'DISCOVER BOSCO →', href: '/about' }],
       },
@@ -611,7 +687,7 @@ async function main() {
             description:
               'Traditional instruments, vocals, rhythm, storytelling and contemporary musical expression for festivals, concerts and special events.',
             href: '/live-performance',
-            image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80',
+            image: '/OKema/pic3.jpeg',
           },
           {
             title: 'SCHOOL RESIDENCY',
@@ -619,7 +695,7 @@ async function main() {
             description:
               'Interactive music, traditional instruments, storytelling, rhythm and cultural learning for students of all ages.',
             href: '/education/school-residency',
-            image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=80',
+            image: '/OKema/schoolresidency3.jpg',
           },
           {
             title: 'ELDERLY VISITS',
@@ -627,7 +703,7 @@ async function main() {
             description:
               'Live musical experiences for senior communities, assisted living facilities, nursing homes and senior centers.',
             href: '/education/elderly-visits',
-            image: 'https://images.unsplash.com/photo-1516307365426-bea591f05011?w=1200&q=80',
+            image: '/OKema/ElderFlower1.jpeg',
           },
         ],
       },
@@ -653,8 +729,8 @@ async function main() {
       type: 'TESTIMONIALS',
       order: 5,
       content: {
-        eyebrow: 'WHAT PEOPLE ARE SAYING',
-        heading: 'Kind words from communities.',
+        eyebrow: 'In their words',
+        heading: 'What people tell me afterwards.',
         limit: 4,
       },
     },
@@ -664,7 +740,7 @@ async function main() {
       content: {
         eyebrow: 'EXPERIENCE THE MUSIC',
         heading: 'Live performance at the Kampala National Theatre.',
-        thumbnail: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1600&q=80',
+        thumbnail: '/OKema/IMG_4864.JPG',
         videoUrl: '',
         ctaLabel: 'MORE PERFORMANCES',
         ctaHref: '/listen',

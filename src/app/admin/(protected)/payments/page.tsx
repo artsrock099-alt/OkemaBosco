@@ -130,7 +130,7 @@ export default async function AdminPaymentsPage() {
                   <tr key={p.id} className="hover:bg-surface-container/30 transition-colors">
                     <td className="py-4 px-6">
                       <Link href={`/admin/bookings`} className="font-medium text-on-surface hover:text-muted-ochre">
-                        {p.booking?.reference || '—'}
+                        {p.booking?.reference || 'N/A'}
                       </Link>
                       <div className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mt-1 truncate max-w-[220px]">
                         {p.booking?.customerName}
@@ -142,14 +142,14 @@ export default async function AdminPaymentsPage() {
                     <td className="py-4 px-6 text-right font-medium text-on-surface tabular-nums">
                       {formatCurrency(Number(p.amount), p.currency)}
                     </td>
-                    <td className="py-4 px-6 text-on-surface-variant">{p.provider || '—'}</td>
+                    <td className="py-4 px-6 text-on-surface-variant">{p.provider || 'N/A'}</td>
                     <td className="py-4 px-6">
                       <span className="font-mono text-[12px] text-muted-ochre bg-muted-ochre/5 px-2 py-1 rounded">
-                        {p.transactionRef || '—'}
+                        {p.transactionRef || 'N/A'}
                       </span>
                     </td>
                     <td className="py-4 px-6 text-on-surface-variant">
-                      {p.paidAt ? formatDateShort(p.paidAt) : '—'}
+                      {p.paidAt ? formatDateShort(p.paidAt) : 'N/A'}
                     </td>
                     <td className="py-4 px-6 text-right">
                       <span className={`inline-block px-2 py-1 font-label text-[10px] rounded uppercase tracking-wider ${statusColors[p.status] || statusColors.PENDING}`}>

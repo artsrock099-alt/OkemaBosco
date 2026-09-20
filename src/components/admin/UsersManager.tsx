@@ -128,7 +128,7 @@ export default function UsersManager({ initialUsers }: { initialUsers: User[] })
                         </span>
                       </div>
                       <div className="min-w-0">
-                        <div className="font-medium text-on-surface">{u.name || '—'}</div>
+                        <div className="font-medium text-on-surface">{u.name || 'N/A'}</div>
                         <div className="font-label text-label-sm text-on-surface-variant truncate">
                           {u.email}
                         </div>

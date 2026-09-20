@@ -1,9 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { EventCard } from '@/components/public/EventCard';
-import { TestimonialCard } from '@/components/public/TestimonialCard';
+import TestimonialFlipbook from '@/components/public/TestimonialFlipbook';
+import EventsMarquee from '@/components/public/EventsMarquee';
+import HeroMedia from '@/components/public/HeroMedia';
 import NewsletterForm from '@/components/public/NewsletterForm';
 import { getUpcomingEvents, getTestimonials, getInstruments } from '@/lib/queries';
+import { getSiteImages } from '@/lib/site-images';
 
 const services = [
   {
@@ -13,7 +16,8 @@ const services = [
     subtitle: 'Experience the Music of Uganda',
     description:
       'Traditional instruments, vocals, rhythm, storytelling and contemporary musical expression for festivals, concerts and special events.',
-    image: '/OKema/pic3.jpeg',
+    imageKey: 'home-service-live',
+    fallbackImage: '/OKema/pic3.jpeg',
   },
   {
     slug: 'school-residency',
@@ -22,7 +26,8 @@ const services = [
     subtitle: 'Bring African Music Into Your Classroom',
     description:
       'Interactive music, traditional instruments, storytelling, rhythm and cultural learning for students of all ages.',
-    image: '/OKema/IMG_2190.jpeg',
+    imageKey: 'home-service-school',
+    fallbackImage: '/OKema/schoolresidency3.jpg',
   },
   {
     slug: 'elderly-visits',
@@ -31,29 +36,29 @@ const services = [
     subtitle: 'Music That Creates Connection',
     description:
       'Live musical experiences for senior communities, assisted living facilities, nursing homes and senior centers.',
-    image: '/OKema/PrimRoseElders6.jpeg',
+    imageKey: 'home-service-elderly',
+    fallbackImage: '/OKema/ElderFlower1.jpeg',
   },
 ];
 
 export default async function HomeFallback() {
-  const [upcomingEvents, testimonials, instruments] = await Promise.all([
+  const [upcomingEvents, testimonials, instruments, images] = await Promise.all([
     getUpcomingEvents(3),
-    getTestimonials(true, 6),
+    getTestimonials(false, 8),
     getInstruments(),
+    getSiteImages(),
   ]);
 
   return (
     <>
       {/* HERO */}
-      <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-16 md:pb-24 bg-deep-charcoal text-white overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="/OKema/Pic1.jpeg"
-            alt="Bosco Okema performing live on stage with traditional Ugandan instruments, moody cinematic lighting"
-            className="w-full h-full object-cover opacity-60"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/30 to-transparent" />
-        </div>
+      <section className="relative min-h-[560px] md:min-h-[92vh] flex flex-col justify-end pt-32 pb-14 md:pb-24 bg-deep-charcoal text-white overflow-hidden">
+        <HeroMedia
+          slug="home"
+          defaultImage="/OKema/Pic1.jpeg"
+          defaultOverlay={60}
+          gradient="from-deep-charcoal via-deep-charcoal/30 to-transparent"
+        />
         <div className="relative z-10 container-x grid grid-cols-1 md:grid-cols-12 gap-gutter items-end">
           <div className="md:col-span-8 lg:col-span-9 flex flex-col gap-6">
             <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tighter leading-none">
@@ -87,14 +92,17 @@ export default async function HomeFallback() {
         </div>
       </section>
 
+      {/* UPCOMING EVENTS TICKER */}
+      <EventsMarquee />
+
       {/* INTRODUCTION */}
       <section className="section-y">
         <div className="container-x grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
           <div className="md:col-span-5 order-2 md:order-1">
             <div className="relative aspect-[4/5] overflow-hidden rounded-tl-3xl rounded-br-3xl">
               <img
-                src="/OKema/pic2.jpeg"
-                alt="Bosco Okema portrait holding traditional Adungu instrument"
+                src={images['home-intro'].url}
+                alt={images['home-intro'].alt}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -127,7 +135,7 @@ export default async function HomeFallback() {
       {/* FEATURED SERVICES */}
       <section className="section-y bg-surface-container">
         <div className="container-x">
-          <div className="text-center mb-16 md:mb-24 max-w-2xl mx-auto">
+          <div className="text-center mb-10 md:mb-14 max-w-2xl mx-auto">
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               OFFERINGS
             </div>
@@ -136,7 +144,7 @@ export default async function HomeFallback() {
             </h2>
           </div>
 
-          <div className="space-y-24 md:space-y-32">
+          <div className="space-y-14 md:space-y-20">
             {services.map((s, i) => (
               <div
                 key={s.slug}
@@ -147,8 +155,8 @@ export default async function HomeFallback() {
                 <div className="md:col-span-7">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img
-                      src={s.image}
-                      alt={s.subtitle}
+                      src={images[s.imageKey].url || s.fallbackImage}
+                      alt={images[s.imageKey].alt || s.subtitle}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -177,7 +185,7 @@ export default async function HomeFallback() {
       {instruments.length > 0 && (
         <section className="section-y">
           <div className="container-x">
-            <div className="text-center mb-16 md:mb-20 max-w-2xl mx-auto">
+            <div className="text-center mb-10 md:mb-14 max-w-2xl mx-auto">
               <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
                 SOUNDS OF UGANDA
               </div>
@@ -186,10 +194,10 @@ export default async function HomeFallback() {
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {instruments.map((inst) => (
                 <div key={inst.id} className="group">
-                  <div className="relative aspect-square overflow-hidden bg-surface-container mb-4">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-surface-container mb-5">
                     {inst.image ? (
                       <Image
                         src={inst.image.url}
@@ -199,19 +207,17 @@ export default async function HomeFallback() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="font-display text-5xl text-on-surface-variant/30">
+                        <span className="font-display text-4xl text-on-surface-variant/30">
                           {inst.name.charAt(0)}
                         </span>
                       </div>
                     )}
                   </div>
-                  <h3 className="font-headline text-headline-md text-on-surface mb-2 group-hover:text-muted-ochre transition-colors">
+                  <h3 className="font-headline text-headline-md text-on-surface mb-3 group-hover:text-muted-ochre transition-colors">
                     {inst.name}
                   </h3>
                   {inst.description && (
-                    <p className="font-body text-body-md text-on-surface-variant line-clamp-3">
-                      {inst.description}
-                    </p>
+                    <p className="font-body text-body-md text-on-surface-variant">{inst.description}</p>
                   )}
                 </div>
               ))}
@@ -223,7 +229,7 @@ export default async function HomeFallback() {
       {/* UPCOMING EVENTS */}
       <section className="section-y bg-surface-container-low">
         <div className="container-x">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-6">
             <div>
               <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
                 UPCOMING EVENTS
@@ -244,7 +250,7 @@ export default async function HomeFallback() {
               ))}
             </div>
           ) : (
-            <div className="card-surface p-16 text-center">
+            <div className="card-surface p-10 md:p-12 text-center">
               <h3 className="font-headline text-headline-md text-on-surface mb-2">
                 Stay tuned for upcoming performances.
               </h3>
@@ -263,21 +269,16 @@ export default async function HomeFallback() {
       {testimonials.length > 0 && (
         <section className="section-y">
           <div className="container-x">
-            <div className="text-center mb-12 md:mb-16">
+            <div className="text-center mb-8 md:mb-12">
               <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-                WHAT PEOPLE ARE SAYING
+                In their words
               </div>
               <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
-                Kind words from communities.
+                What people tell me afterwards.
               </h2>
             </div>
-            {testimonials[0] && <TestimonialCard testimonial={testimonials[0]} variant="featured" />}
-            {testimonials.length > 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-16">
-                {testimonials.slice(1, 4).map((t) => (
-                  <TestimonialCard key={t.id} testimonial={t} />
-                ))}
-              </div>
+            {testimonials.length > 0 && (
+              <TestimonialFlipbook testimonials={testimonials} label="Kind words" />
             )}
           </div>
         </section>
@@ -286,7 +287,7 @@ export default async function HomeFallback() {
       {/* FEATURED VIDEO */}
       <section className="section-y bg-deep-charcoal text-warm-ivory">
         <div className="container-x">
-          <div className="text-center mb-12 md:mb-16">
+          <div className="text-center mb-8 md:mb-12">
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               EXPERIENCE THE MUSIC
             </div>
@@ -296,8 +297,8 @@ export default async function HomeFallback() {
           </div>
           <div className="relative aspect-video w-full max-w-5xl mx-auto overflow-hidden">
             <img
-              src="/OKema/IMG_4864.JPG"
-              alt="Video thumbnail - Bosco Okema performing live"
+              src={images['home-video-thumbnail'].url}
+              alt={images['home-video-thumbnail'].alt}
               className="w-full h-full object-cover"
             />
           </div>
@@ -312,11 +313,11 @@ export default async function HomeFallback() {
       {/* FINAL CTA */}
       <section className="section-y">
         <div className="container-x">
-          <div className="card-surface p-10 md:p-20 text-center">
+          <div className="card-surface p-8 md:p-12 text-center">
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               BRING BOSCO TO YOUR COMMUNITY
             </div>
-            <h2 className="font-display text-headline-lg-mobile md:text-display-lg text-on-surface tracking-tight leading-tight mb-10 max-w-4xl mx-auto">
+            <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight leading-tight mb-8 max-w-3xl mx-auto">
               School programs • Senior communities • Festivals • Concerts • Cultural events •
               Private events
             </h2>

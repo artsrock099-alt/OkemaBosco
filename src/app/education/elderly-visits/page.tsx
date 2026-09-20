@@ -1,35 +1,82 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { TestimonialCard } from '@/components/public/TestimonialCard';
+import TestimonialFlipbook from '@/components/public/TestimonialFlipbook';
 import { getTestimonials } from '@/lib/queries';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
+import { getSiteImages } from '@/lib/site-images';
 
 export const metadata: Metadata = {
   title: 'Elderly Visits',
   description:
-    'Live musical performances for senior communities, assisted living, nursing homes, memory care and senior centers — fostering joy and connection.',
+    'Live musical performances for senior communities, assisted living, nursing homes, memory care and senior centers. Music that brings joy and connection.',
 };
 
 const benefits = [
   {
-    title: 'Joy & Emotional Wellbeing',
+    title: 'Triggers Memory',
     description:
-      'Music has a unique ability to awaken memories, spark smiles, and lift spirits — especially meaningful for those experiencing isolation or cognitive decline.',
+      'Familiar melodies and rhythms can help residents recall and share stories from their past, opening moments of clarity and connection.',
   },
   {
-    title: 'Meaningful Connection',
+    title: 'Reduces Anxiety',
     description:
-      'Live, in-person music creates moments of shared experience — between residents, staff, family and the musician.',
+      'Live, acoustic music creates a peaceful atmosphere, lowering tension and inviting a sense of safety and ease.',
   },
   {
-    title: 'Cultural Discovery',
+    title: 'Encourages Engagement',
     description:
-      'Songs and stories from Uganda open a window to another culture, creating conversation and curiosity.',
+      'Toe-tapping, hand-clapping and gentle singing get everyone involved, including residents who are often withdrawn or quiet.',
   },
   {
-    title: 'Interactive & Gentle',
+    title: 'Brings Dignity',
     description:
-      'Programs are tailored to the needs of the room — whether high-energy sing-alongs or quiet instrumental moments.',
+      'Honouring elders with music and full attention reminds them that they are seen, valued and cherished.',
   },
+];
+
+const whatWeBring = [
+  {
+    title: 'Soothing Live Music',
+    description:
+      'The soft, ringing tones of the thumb piano and the warm sound of the adungu suit quiet spaces. No amplification and no overstimulation, just live acoustic music that invites calm and smiles, with familiar songs and sing-alongs when residents want to join in.',
+  },
+  {
+    title: 'Cultural Connection & Storytelling',
+    description:
+      'Between songs we share short stories about the instruments: where they come from, how they are made and what they meant to families and communities. The stories spark conversation and memories, and many residents love touching the instruments and asking questions.',
+  },
+  {
+    title: 'Flexible & Respectful Programs',
+    description:
+      'We adapt to your residents’ energy levels. We play for groups in common areas, or visit bedside for one-to-one moments, and we work around meals, medications and rest times.',
+  },
+];
+
+const programFormats = [
+  {
+    label: 'Program 01',
+    title: 'Afternoon Concert',
+    duration: '45 minutes',
+    description:
+      'A group program with music and stories in the common area. Interactive and joyful, built for group connection, with residents taking part through clapping, singing and questions.',
+  },
+  {
+    label: 'Program 02',
+    title: 'Room-to-Room Visits',
+    duration: '5-10 min per resident',
+    description:
+      'Bedside sets for residents who cannot join the group programs. Intimate, one-to-one moments where the music comes to them.',
+  },
+];
+
+const directorPoints = [
+  'Flexible scheduling, working around meals, medications and rest times',
+  'No equipment needed, acoustic instruments only',
+  'Adaptable programs, from lively group sessions to quiet personal presence',
+  'Recurring visits available, monthly or seasonal',
+  'Budget conscious, we will find a plan that fits your facility',
 ];
 
 const settings = [
@@ -44,30 +91,32 @@ const settings = [
 ];
 
 export default async function ElderlyVisitsPage() {
-  const testimonials = (await getTestimonials(false, 3)).filter((_t, i) => i > 1);
+  const cmsSections = await getCmsSections('education/elderly-visits');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
+  const testimonials = (await getTestimonials(false, 6)).filter((_t, i) => i % 2 === 1);
+  const images = await getSiteImages();
 
   return (
     <>
-      <section className="relative min-h-[70vh] flex flex-col justify-end pt-32 pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1516307365426-bea591f05011?w=1600&q=80"
-            alt="Seniors enjoying a live music performance"
-            className="w-full h-full object-cover opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/60 to-transparent" />
-        </div>
+      <section className="relative min-h-[78vh] md:min-h-[88vh] flex flex-col justify-end pt-32 pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia
+          slug="education/elderly-visits"
+          defaultImage="/OKema/PrimRoseElders6.jpeg"
+          defaultOverlay={50}
+          gradient="from-deep-charcoal via-deep-charcoal/60 to-transparent"
+        />
         <div className="relative z-10 container-x max-w-4xl">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            EDUCATION • ELDERLY VISITS
+          
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-8">
-            Music that connects generations.
+            Music that brings memory home.
           </h1>
           <p className="font-body text-body-md md:text-body-lg text-surface-variant max-w-2xl mb-8">
-            Bosco brings live music and cultural experiences to senior communities across the
-            region — gentle, joyful visits designed to spark memories, create connection, and
-            brighten the day.
+            Music reaches places that words sometimes cannot. Live African instruments, gentle
+            rhythms and familiar melodies, creating moments of joy, comfort and connection for
+            residents and staff.
           </p>
           <Link href="/book" className="btn-primary-light inline-flex">
             SCHEDULE A PERFORMANCE
@@ -80,8 +129,8 @@ export default async function ElderlyVisitsPage() {
           <div className="md:col-span-5 order-2 md:order-1">
             <div className="relative aspect-[4/5] overflow-hidden rounded-tl-3xl rounded-br-3xl">
               <img
-                src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1000&q=80"
-                alt="Elderly person smiling and enjoying music"
+                src={images['elderly-visits-story'].url}
+                alt={images['elderly-visits-story'].alt}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -94,9 +143,9 @@ export default async function ElderlyVisitsPage() {
               Live music is medicine for the heart.
             </h2>
             <p className="font-body text-body-lg text-on-surface-variant mb-8">
-              Whether sharing familiar African melodies, singing call-and-response songs, or
-              playing gentle instrumentals on the Adungu, each visit is crafted to meet the needs
-              of the room. The result is moments of joy, shared across generations.
+              Whether sharing familiar African melodies, singing call-and-response songs, or playing
+              gentle instrumentals on the adungu, each visit is crafted to meet the needs of the
+              room. The result is moments of joy, shared across generations.
             </p>
           </div>
         </div>
@@ -104,12 +153,35 @@ export default async function ElderlyVisitsPage() {
 
       <section className="section-y bg-surface-container">
         <div className="container-x">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-              PROGRAM EXPERIENCE
+              WHAT WE BRING
             </div>
             <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
-              The difference music makes.
+              Calm, connection and joy.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {whatWeBring.map((item) => (
+              <div key={item.title} className="card-surface p-8 flex flex-col h-full">
+                <h3 className="font-headline text-headline-md text-on-surface mb-4">{item.title}</h3>
+                <p className="font-body text-body-md text-on-surface-variant flex-1">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-y bg-surface-container-low">
+        <div className="container-x">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
+            <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
+              BENEFITS FOR RESIDENTS
+            </div>
+            <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
+              What music does for residents.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -125,7 +197,40 @@ export default async function ElderlyVisitsPage() {
 
       <section className="section-y">
         <div className="container-x">
-          <div className="card-surface p-8 md:p-16">
+          <div className="text-center max-w-2xl mx-auto mb-10 md:mb-12">
+            <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
+              PROGRAM FORMATS
+            </div>
+            <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
+              Two ways to host a visit.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            {programFormats.map((program) => (
+              <div key={program.title} className="card-surface p-8 md:p-10 flex flex-col h-full">
+                <div className="font-label text-label-sm uppercase tracking-widest text-on-surface-variant mb-2">
+                  {program.label}
+                </div>
+                <div className="font-label text-label-sm text-muted-ochre uppercase tracking-widest mb-3">
+                  {program.duration}
+                </div>
+                <h3 className="font-headline text-headline-md text-on-surface mb-4">{program.title}</h3>
+                <p className="font-body text-body-md text-on-surface-variant flex-1">
+                  {program.description}
+                </p>
+              </div>
+            ))}
+          </div>
+          <p className="font-body text-body-md text-on-surface-variant text-center mt-8 max-w-2xl mx-auto">
+            Ask about recurring monthly visits and special holiday programs. We will work with your
+            budget and schedule.
+          </p>
+        </div>
+      </section>
+
+      <section className="section-y">
+        <div className="container-x">
+          <div className="card-surface p-8 md:p-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
@@ -154,29 +259,83 @@ export default async function ElderlyVisitsPage() {
         </div>
       </section>
 
+      <section className="section-y bg-surface-container">
+        <div className="container-x">
+          <div className="card-surface p-8 md:p-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
+                  FOR ACTIVITY DIRECTORS
+                </div>
+                <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight mb-8 leading-tight">
+                  Planning a visit is easy.
+                </h2>
+                <p className="font-body text-body-md text-on-surface-variant mb-6">
+                  Here is what to expect when you bring Bosco into your facility. We bring the
+                  sound, the stories and the warmth. You bring the residents who deserve to feel
+                  seen.
+                </p>
+              </div>
+              <ul className="grid grid-cols-1 gap-3">
+                {directorPoints.map((point) => (
+                  <li key={point} className="flex items-start gap-3 p-4 bg-surface-container rounded">
+                    <svg className="w-5 h-5 text-muted-ochre flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="font-body text-body-md text-on-surface">{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-y bg-deep-charcoal text-warm-ivory">
+        <div className="container-x max-w-4xl text-center">
+          <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-6">
+            A NOTE ON HEALING
+          </div>
+          <blockquote className="font-display text-headline-lg-mobile md:text-headline-lg text-warm-ivory leading-tight italic mb-8">
+            &ldquo;In northern Uganda, music helped communities rebuild after loss. The adungu was
+            played to welcome people home, and the thumb piano was played to calm the heart. We
+            carry that same spirit here: music as comfort, as company, and as a way to say you are
+            not alone.&rdquo;
+          </blockquote>
+          <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre">
+            Okema Bosco
+          </div>
+          <div className="mt-10 pt-8 border-t border-surface-variant/20">
+            <p className="font-headline text-body-lg md:text-headline-md text-surface-variant italic">
+              &ldquo;The elder who sits alone has many stories no one hears. But when the drum
+              speaks, they all remember.&rdquo;
+            </p>
+            <div className="mt-4 font-label text-label-sm uppercase tracking-widest text-muted-ochre">
+              Ugandan proverb
+            </div>
+          </div>
+        </div>
+      </section>
+
       {testimonials.length > 0 && (
         <section className="section-y bg-surface-container-low">
           <div className="container-x">
             <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight text-center mb-12">
               What communities share.
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {testimonials.map((t) => (
-                <TestimonialCard key={t.id} testimonial={t} />
-              ))}
-            </div>
+            <TestimonialFlipbook testimonials={testimonials} label="From the room" />
           </div>
         </section>
       )}
 
       <section className="section-y">
-        <div className="container-x card-surface p-10 md:p-20 text-center">
+        <div className="container-x card-surface p-8 md:p-12 text-center">
           <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight mb-8 max-w-3xl mx-auto">
-            Ready to bring music to your community?
+            Ready to bring music to your residents?
           </h2>
           <p className="font-body text-body-lg text-on-surface-variant mb-10 max-w-xl mx-auto">
-            Bosco offers free 15-minute consultations for activity directors and program
-            coordinators to design the perfect visit.
+            Let us talk about your facility, your residents&rsquo; needs, and what kind of program
+            fits best. We will work with your budget and schedule.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/book" className="btn-primary">

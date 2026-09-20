@@ -73,13 +73,17 @@ const bookingOptions: { value: BookingType; title: string; description: string; 
 const budgetOptions: { value: string; label: string }[] = [
   { value: '', label: 'Not sure yet' },
   { value: '500000', label: 'Under UGX 500,000' },
-  { value: '1500000', label: 'UGX 500,000 – 2M' },
-  { value: '5000000', label: 'UGX 2M – 5M' },
-  { value: '10000000', label: 'UGX 5M – 10M' },
+  { value: '1500000', label: 'UGX 500,000 to 2M' },
+  { value: '5000000', label: 'UGX 2M to 5M' },
+  { value: '10000000', label: 'UGX 5M to 10M' },
   { value: '10000001', label: 'Above UGX 10M' },
 ];
 
-export default function BookingForm() {
+export default function BookingForm({
+  contactEmail = 'okemabosco18@gmail.com',
+}: {
+  contactEmail?: string;
+}) {
   const [step, setStep] = useState<Step>(1);
   const [form, setForm] = useState<Record<string, any>>({
     type: '',
@@ -182,7 +186,7 @@ export default function BookingForm() {
           </svg>
         </div>
         <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface mb-4 leading-tight">
-          Thank you — request received!
+          Thank you, your request is in!
         </h2>
         {reference && (
           <div className="inline-block px-4 py-2 bg-surface-container rounded mb-6">
@@ -193,13 +197,13 @@ export default function BookingForm() {
           </div>
         )}
         <p className="font-body text-body-md md:text-body-lg text-on-surface-variant max-w-lg mx-auto mb-6">
-          I will review the details and respond within 2–3 business days with availability,
-          suggested formats and pricing.
+          I will review the details and get back to you within two or three business days with
+          availability, suggested formats and pricing.
         </p>
         <p className="font-body text-body-md text-on-surface-variant mb-10">
           If this is urgent, you can also reach me directly at{' '}
-          <a href="mailto:hello@boscookema.com" className="text-muted-ochre hover:underline">
-            hello@boscookema.com
+          <a href={`mailto:${contactEmail}`} className="text-muted-ochre hover:underline">
+            {contactEmail}
           </a>
           .
         </p>
@@ -373,8 +377,8 @@ export default function BookingForm() {
               >
                 <option value="">Select size</option>
                 <option value="Under 50">Intimate (Under 50)</option>
-                <option value="50-200">Medium (50–200)</option>
-                <option value="200-500">Large (200–500)</option>
+                <option value="50-200">Medium (50-200)</option>
+                <option value="200-500">Large (200-500)</option>
                 <option value="500+">Festival / 500+</option>
               </select>
             </div>
@@ -551,17 +555,17 @@ export default function BookingForm() {
             </h3>
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
               {[
-                ['Booking Type', bookingOptions.find((b) => b.value === form.type)?.title || '—'],
-                ['Date', form.eventDate ? new Date(form.eventDate).toLocaleDateString() : '—'],
-                ['Alternative Date', form.alternativeDate ? new Date(form.alternativeDate).toLocaleDateString() : '—'],
-                ['Venue', form.venue || '—'],
-                ['Location', form.location || '—'],
-                ['Audience', form.expectedAudience || '—'],
+                ['Booking Type', bookingOptions.find((b) => b.value === form.type)?.title || 'Not provided'],
+                ['Date', form.eventDate ? new Date(form.eventDate).toLocaleDateString() : 'Not provided'],
+                ['Alternative Date', form.alternativeDate ? new Date(form.alternativeDate).toLocaleDateString() : 'Not provided'],
+                ['Venue', form.venue || 'Not provided'],
+                ['Location', form.location || 'Not provided'],
+                ['Audience', form.expectedAudience || 'Not provided'],
                 ['Budget', form.budget ? (budgetOptions.find((o) => o.value === String(form.budget))?.label || 'Not specified') : 'Not specified'],
-                ['Name', form.customerName || '—'],
-                ['Organization', form.organization || '—'],
-                ['Email', form.customerEmail || '—'],
-                ['Phone', form.customerPhone || '—'],
+                ['Name', form.customerName || 'Not provided'],
+                ['Organization', form.organization || 'Not provided'],
+                ['Email', form.customerEmail || 'Not provided'],
+                ['Phone', form.customerPhone || 'Not provided'],
               ].map(([k, v]) => (
                 <div key={k}>
                   <dt className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-1">

@@ -13,7 +13,7 @@ export default function AdminCreatePagePage() {
           Create New Page
         </h1>
         <p className="font-body text-body-md text-on-surface-variant mt-2 max-w-2xl">
-          Every page on the site is composed using the Page Builder — stack sections of any type, in any order.
+          Every page on the site is composed using the Page Builder. Stack sections of any type, in any order.
         </p>
       </div>
       <CreatePageForm />

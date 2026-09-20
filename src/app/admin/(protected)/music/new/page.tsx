@@ -57,7 +57,7 @@ export default async function AdminMusicNewPage() {
             <div>
               <label className="block font-label text-label-sm uppercase tracking-widest text-on-surface-variant mb-2">Album</label>
               <select name="albumId" defaultValue="" className="input-field">
-                <option value="">— Single / Standalone —</option>
+                <option value="">Single / Standalone</option>
                 {albumsOk.map((a: any) => (
                   <option key={a.id} value={a.id}>
                     {a.title}{a.year ? ` (${a.year})` : ''}

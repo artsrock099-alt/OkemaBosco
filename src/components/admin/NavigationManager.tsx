@@ -153,7 +153,7 @@ export default function NavigationManager({ navigations: initialNavs }: Props) {
 
       <div className="flex justify-between items-center flex-wrap gap-3">
         <p className="font-body text-body-md text-on-surface-variant">
-          Manage the <strong className="text-on-surface">{activeNav?.name}</strong> navigation — reorder, rename, show/hide and add links.
+          Manage the <strong className="text-on-surface">{activeNav?.name}</strong> navigation. Reorder, rename, show or hide, and add links.
         </p>
         <button
           onClick={() => {

@@ -180,7 +180,7 @@ export default function SEOManager({ settings: initialSettings, mediaItems }: Pr
                 onChange={(e) => handleChange('defaultOgImage', e.target.value)}
                 className="input-field"
               >
-                <option value="">— Use first image on page —</option>
+                <option value="">Use first image on page</option>
                 {mediaItems.map((m) => (
                   <option key={m.id} value={m.url}>
                     {m.title}

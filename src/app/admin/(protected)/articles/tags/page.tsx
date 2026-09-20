@@ -38,7 +38,7 @@ export default async function AdminArticleTagsPage() {
         resourceLabel={{ singular: 'Tag', plural: 'Tags', icon: '🏷️' }}
         endpoint="articles/tags"
         initialItems={items as any}
-        description="Fine-grained tagging for articles — tags complement categories and appear alongside each published piece."
+        description="Fine-grained tagging for articles. Tags sit alongside categories and appear with each published piece."
       />
     </div>
   );

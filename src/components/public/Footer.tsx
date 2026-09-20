@@ -1,31 +1,7 @@
 import Link from 'next/link';
-import { Instagram, Facebook, Youtube, Music, Twitter, Linkedin } from 'lucide-react';
 import NewsletterForm from './NewsletterForm';
+import { getSocialIcon, isMusicIconLink } from './SocialIcon';
 import { getSiteSettings, getSocialLinks, getNavigation } from '@/lib/queries';
-
-function TikTokIcon({ className = 'w-5 h-5' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-    </svg>
-  );
-}
-
-const iconMap: Record<string, React.ReactNode> = {
-  instagram: <Instagram className="w-5 h-5" />,
-  facebook: <Facebook className="w-5 h-5" />,
-  youtube: <Youtube className="w-5 h-5" />,
-  spotify: <Music className="w-5 h-5" />,
-  tiktok: <TikTokIcon />,
-  twitter: <Twitter className="w-5 h-5" />,
-  linkedin: <Linkedin className="w-5 h-5" />,
-  music: <Music className="w-5 h-5" />,
-};
-
-function getIcon(iconName?: string, platform?: string) {
-  const key = (iconName || platform || '').toLowerCase().trim();
-  return iconMap[key] || <Music className="w-5 h-5" />;
-}
 
 const defaultNav = [
   ['Home', '/'],
@@ -74,30 +50,30 @@ export async function Footer() {
   const year = new Date().getFullYear();
   const brandName = settings?.siteName || 'BOSCO OKEMA';
   const copyright = settings?.copyrightText || `© ${year} ${brandName}. All Rights Reserved.`;
-  const contactEmail = settings?.contactEmail || 'hello@boscookema.com';
-  const contactPhone = settings?.contactPhone || '+256 700 000 000';
+  const contactEmail = settings?.contactEmail || 'okemabosco18@gmail.com';
+  const contactPhone = settings?.contactPhone || '+1 (240) 926-0614';
   const contactLocation = settings?.contactLocation || 'Kampala, Uganda';
   const tagline = settings?.tagline || 'Ugandan Musician • Cultural Educator • Performer';
   const newsletterEnabled = settings?.newsletterEnabled !== false;
 
   const navToShow = navItems.length > 0 ? navItems : defaultNav;
-  const socialsToShow =
+  const seededSocials =
     socials.length > 0
       ? socials
       : [
           { id: '1', platform: 'Instagram', url: '#', icon: 'instagram' },
           { id: '2', platform: 'Facebook', url: '#', icon: 'facebook' },
           { id: '3', platform: 'YouTube', url: '#', icon: 'youtube' },
-          { id: '4', platform: 'Spotify', url: '#', icon: 'spotify' },
-          { id: '5', platform: 'TikTok', url: '#', icon: 'tiktok' },
+          { id: '4', platform: 'TikTok', url: '#', icon: 'tiktok' },
         ];
+  const socialsToShow = seededSocials.filter((s: any) => !isMusicIconLink(s));
 
   const taglineLines = tagline.split('•').map((t: string) => t.trim());
 
   return (
     <footer className="bg-deep-charcoal text-warm-ivory w-full mt-section-gap">
       <div className="container-x py-section-gap">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 mb-12">
           <div className="md:col-span-4">
             <h3 className="font-display text-headline-lg text-warm-ivory tracking-tighter mb-4">
               {brandName.toUpperCase()}
@@ -117,7 +93,7 @@ export async function Footer() {
                   aria-label={s.platform || s.label || 'Social link'}
                   className="w-10 h-10 rounded-full border border-surface-variant/30 flex items-center justify-center text-surface-variant hover:text-muted-ochre hover:border-muted-ochre transition-colors duration-300"
                 >
-                  {getIcon(s.icon, s.platform)}
+                  {getSocialIcon(s.icon, s.platform)}
                 </a>
               ))}
             </div>
@@ -171,7 +147,10 @@ export async function Footer() {
                 </a>
               </p>
               <p>
-                <a href={`tel:${contactPhone}`} className="hover:text-warm-ivory transition-colors">
+                <a
+                  href={`tel:${String(contactPhone).replace(/[^+\d]/g, '')}`}
+                  className="hover:text-warm-ivory transition-colors"
+                >
                   {contactPhone}
                 </a>
               </p>

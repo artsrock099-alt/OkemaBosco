@@ -2,14 +2,20 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getArticles } from '@/lib/queries';
 import { formatDate } from '@/lib/utils';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
 
 export const metadata: Metadata = {
   title: 'Articles',
   description:
-    'Stories, reflections and writing from Bosco Okema — on music, culture, education and life in Uganda.',
+    'Stories, reflections and writing from Bosco Okema about music, culture, education and life in Uganda.',
 };
 
 export default async function ArticlesPage() {
+  const cmsSections = await getCmsSections('media/articles');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   const articles = await getArticles(20);
 
   const fallbackArticles = [
@@ -18,20 +24,20 @@ export default async function ArticlesPage() {
       slug: 'the-story-of-the-adungu',
       title: 'The Story of the Adungu',
       excerpt:
-        'An instrument passed down through generations — how the bow harp carries the voices of my ancestors, and what it means to play it today.',
+        'An instrument passed down through generations, and what it means to play it today.',
       category: { name: 'Culture' },
       publishDate: new Date('2025-06-10'),
-      featuredImage: { url: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=1200&q=80' },
+      featuredImage: { url: '/OKema/pic3.jpeg' },
     },
     {
       id: '2',
       slug: 'music-in-the-classroom',
       title: 'Music in the Classroom: Five Things I Learned',
       excerpt:
-        'From the shyest student to the room full of drummers — ten years of school residencies have taught me more than I ever expected.',
+        'From the shyest student to a room full of drummers, ten years of school residencies have taught me more than I ever expected.',
       category: { name: 'Education' },
       publishDate: new Date('2025-04-22'),
-      featuredImage: { url: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=80' },
+      featuredImage: { url: '/OKema/schoolresidency6.jpeg' },
     },
     {
       id: '3',
@@ -41,7 +47,7 @@ export default async function ArticlesPage() {
         'The most attentive audience I have ever known. A letter from a daughter, a room in silence, and the song that opened a memory.',
       category: { name: 'Community' },
       publishDate: new Date('2025-02-14'),
-      featuredImage: { url: 'https://images.unsplash.com/photo-1516307365426-bea591f05011?w=1200&q=80' },
+      featuredImage: { url: '/OKema/PrimRoseElders4.jpeg' },
     },
     {
       id: '4',
@@ -51,17 +57,17 @@ export default async function ArticlesPage() {
         'Four stages, three countries, one unforgettable night under the stars in Gulu. Notes from the road, from the dressing room, and from the crowd.',
       category: { name: 'Tour Diary' },
       publishDate: new Date('2024-12-30'),
-      featuredImage: { url: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&q=80' },
+      featuredImage: { url: '/OKema/liveperformance2.JPG' },
     },
     {
       id: '5',
       slug: 'interview-making-of-sounds-of-uganda',
       title: 'Interview: The Making of Sounds of Uganda',
       excerpt:
-        'A track-by-track walk through my latest album — where each song began, who it honors, and why it had to be recorded live.',
+        'A track-by-track walk through my latest album: where each song began, who it honors, and why it had to be recorded live.',
       category: { name: 'Music' },
       publishDate: new Date('2024-10-05'),
-      featuredImage: { url: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=1200&q=80' },
+      featuredImage: { url: '/OKema/pic4.jpeg' },
     },
     {
       id: '6',
@@ -71,7 +77,7 @@ export default async function ArticlesPage() {
         'It is not a costume. It is not a performance. It is the small decisions, made every day, that carry us forward together.',
       category: { name: 'Culture' },
       publishDate: new Date('2024-08-18'),
-      featuredImage: { url: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80' },
+      featuredImage: { url: '/OKema/culturePerformance.JPG' },
     },
   ];
 
@@ -79,10 +85,11 @@ export default async function ArticlesPage() {
 
   return (
     <>
-      <section className="pt-32 pb-12 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x text-center">
+      <section className="relative pt-32 pb-12 md:pt-40 md:pb-16 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia slug="media/articles" gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25" />
+        <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            MEDIA • ARTICLES
+        
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6">
             Articles & Stories

@@ -1,12 +1,31 @@
 import type { Metadata } from 'next';
 import { MusicCard } from '@/components/public/MusicCard';
 import { getMusic } from '@/lib/queries';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
+import { getSiteImages } from '@/lib/site-images';
 
 export const metadata: Metadata = {
   title: 'Listen',
   description:
-    'Listen to Bosco Okema — featured music, live recordings, studio tracks, and stream on Spotify, YouTube, Apple Music and SoundCloud.',
+    'Listen to Bosco Okema: featured music, live recordings, studio tracks, and streams on Spotify, YouTube, Apple Music and SoundCloud.',
 };
+
+const videoTiles = [
+  {
+    key: 'listen-video-1',
+    venue: 'Live at National Theatre',
+    title: 'Adungu Solo Live',
+    fallbackImage: '/OKema/liveperformance2.JPG',
+  },
+  {
+    key: 'listen-video-2',
+    venue: 'Kampala Arts Festival',
+    title: 'Sounds of Uganda Ensemble',
+    fallbackImage: '/OKema/liveperformance1.JPG',
+  },
+];
 
 const platforms = [
   { name: 'Spotify', href: '#', color: 'bg-[#1DB954]' },
@@ -16,16 +35,21 @@ const platforms = [
 ];
 
 export default async function ListenPage() {
+  const cmsSections = await getCmsSections('listen');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   const allMusic = await getMusic(false, 12);
   const featured = allMusic.filter((m) => m.isFeatured).slice(0, 3);
   const live = allMusic.filter((m) => m.isLive).slice(0, 3);
+  const images = await getSiteImages();
 
   return (
     <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-24 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x text-center">
+      <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia slug="listen" gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25" />
+        <div className="relative z-10 container-x text-center">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
-            LISTEN
+          
           </div>
           <h1 className="font-display text-display-lg-mobile md:text-display-lg text-warm-ivory tracking-tight leading-tight mb-6 max-w-4xl mx-auto">
             The sounds of Uganda, wherever you are.
@@ -127,14 +151,15 @@ export default async function ListenPage() {
               Watch the performances.
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-6xl mx-auto">
-            {[0, 1].map((i) => (
-              <div key={i} className="group relative aspect-video bg-surface-container-high overflow-hidden cursor-pointer">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 max-w-2xl mx-auto">
+            {videoTiles.map((tile) => (
+              <div
+                key={tile.key}
+                className="group relative aspect-[2/3] bg-surface-container-high overflow-hidden cursor-pointer"
+              >
                 <img
-                  src={`https://images.unsplash.com/photo-${
-                    i === 0 ? '1470229722913-7c0e2dbbafd3' : '1511671782779-c97d3d27a1d4'
-                  }?w=1200&q=80`}
-                  alt={`Performance video ${i + 1}`}
+                  src={images[tile.key].url || tile.fallbackImage}
+                  alt={images[tile.key].alt || tile.title}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -146,11 +171,9 @@ export default async function ListenPage() {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-deep-charcoal to-transparent">
                   <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-1">
-                    {i === 0 ? 'Live at National Theatre' : 'Kampala Arts Festival'}
+                    {tile.venue}
                   </div>
-                  <h3 className="font-headline text-headline-md text-warm-ivory">
-                    {i === 0 ? 'Adungu Solo Live' : 'Sounds of Uganda Ensemble'}
-                  </h3>
+                  <h3 className="font-headline text-headline-md text-warm-ivory">{tile.title}</h3>
                 </div>
               </div>
             ))}

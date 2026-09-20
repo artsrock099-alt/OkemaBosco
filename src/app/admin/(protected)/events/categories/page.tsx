@@ -40,7 +40,7 @@ export default async function AdminEventCategoriesPage() {
         resourceLabel={{ singular: 'Category', plural: 'Categories', icon: '📁' }}
         endpoint="events/categories"
         initialItems={items as any}
-        description="Organize events by type — categories appear on the public Events page filter and in content listings."
+        description="Organize events by type. Categories appear in the public Events page filter and in content listings."
       />
     </div>
   );

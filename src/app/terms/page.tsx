@@ -1,12 +1,19 @@
 import Link from 'next/link';
+import SectionRenderer from '@/components/public/SectionRenderer';
+import HeroMedia from '@/components/public/HeroMedia';
+import { getCmsSections } from '@/lib/cms';
 
 export const metadata = { title: 'Terms of Service' };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const cmsSections = await getCmsSections('terms');
+  if (cmsSections) return <SectionRenderer sections={cmsSections} />;
+
   return (
     <>
-      <section className="pt-32 pb-16 md:pt-40 md:pb-20 bg-deep-charcoal text-warm-ivory">
-        <div className="container-x max-w-4xl">
+      <section className="relative pt-32 pb-16 md:pt-40 md:pb-20 bg-deep-charcoal text-warm-ivory overflow-hidden">
+        <HeroMedia slug="terms" gradient="from-deep-charcoal via-deep-charcoal/50 to-deep-charcoal/25" />
+        <div className="relative z-10 container-x max-w-4xl">
           <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
             LEGAL
           </div>
@@ -38,9 +45,9 @@ export default function TermsPage() {
               <h3 className="font-headline text-headline-md text-on-surface mb-4">Bookings & Cancellation</h3>
               <p>
                 A booking becomes confirmed once a deposit is received or a written agreement is
-                signed by both parties. Cancellation terms are agreed on a per-engagement basis —
-                where not otherwise specified, deposits are non-refundable within 30 days of the
-                event date.
+                signed by both parties. Cancellation terms are agreed for each engagement. Where
+                nothing else is agreed, deposits are non-refundable within 30 days of the event
+                date.
               </p>
             </div>
             <div>
@@ -54,10 +61,10 @@ export default function TermsPage() {
             <div>
               <h3 className="font-headline text-headline-md text-on-surface mb-4">Intellectual Property</h3>
               <p>
-                All content on this website — including but not limited to music, recordings,
-                photographs, text, artwork, video, and the Bosco Okema name and brand — is owned
-                or licensed by Bosco Okema and protected by applicable copyright and trademark
-                laws. Reproduction or redistribution without written consent is prohibited.
+                All content on this website, including but not limited to music, recordings,
+                photographs, text, artwork, video, and the Bosco Okema name and brand, is owned or
+                licensed by Bosco Okema and protected by applicable copyright and trademark laws.
+                Reproduction or redistribution without written consent is prohibited.
               </p>
             </div>
             <div>
@@ -73,8 +80,8 @@ export default function TermsPage() {
               <h3 className="font-headline text-headline-md text-on-surface mb-4">Contact</h3>
               <p>
                 Questions about these terms should be addressed to{' '}
-                <a href="mailto:hello@boscookema.com" className="text-muted-ochre hover:underline">
-                  hello@boscookema.com
+                <a href="mailto:okemabosco18@gmail.com" className="text-muted-ochre hover:underline">
+                  okemabosco18@gmail.com
                 </a>
                 .
               </p>

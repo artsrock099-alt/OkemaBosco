@@ -29,7 +29,7 @@ export default async function AdminMessagesPage() {
       <div className="card-surface overflow-hidden divide-y divide-earth-brown/10">
         {messages.length === 0 ? (
           <div className="py-16 text-center text-on-surface-variant">
-            No messages yet — your inbox is quiet.
+            No messages yet. Your inbox is quiet.
           </div>
         ) : (
           messages.map((m) => (

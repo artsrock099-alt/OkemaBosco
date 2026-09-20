@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { EventCard } from '@/components/public/EventCard';
-import { TestimonialCard } from '@/components/public/TestimonialCard';
+import TestimonialFlipbook from '@/components/public/TestimonialFlipbook';
 import NewsletterForm from '@/components/public/NewsletterForm';
 import {
   getUpcomingEvents,
@@ -11,6 +11,7 @@ import {
   getInstruments,
   getSocialLinks,
 } from '@/lib/queries';
+import { resolveBackgroundMedia, toEmbedUrl } from '@/lib/media';
 import type { PageSection } from '@prisma/client';
 
 type Content = Record<string, any>;
@@ -50,7 +51,7 @@ function ButtonsRow({ buttons, variant }: { buttons?: any[]; variant?: string })
 function SectionHead({ eyebrow, heading, dark = false }: { eyebrow?: string; heading?: string; dark?: boolean }) {
   if (!eyebrow && !heading) return null;
   return (
-    <div className="text-center mb-12 md:mb-16 max-w-3xl mx-auto">
+    <div className="text-center mb-8 md:mb-12 max-w-3xl mx-auto">
       {eyebrow && (
         <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
           {eyebrow}
@@ -81,17 +82,48 @@ async function HeroSection({ content }: { content: Content }) {
   );
   const image = cx(content, 'image');
   const imageAlt = cx(content, 'imageAlt', 'Bosco Okema performing live');
+  const backgroundVideo = cx(content, 'backgroundVideo') || cx(content, 'videoUrl');
   const buttons = content?.buttons || [
     { label: 'BOOK BOSCO', href: '/book' },
     { label: 'WATCH & LISTEN', href: '/listen', variant: 'outline' },
   ];
   const socials: string[] = content?.socials || ['INSTAGRAM', 'SPOTIFY', 'YOUTUBE', 'FACEBOOK'];
 
+  const embedUrl = toEmbedUrl(backgroundVideo);
+  const videoFile = !embedUrl && backgroundVideo && /^(https?:)?\/\/|^\//.test(backgroundVideo) ? backgroundVideo : '';
+  const overlayRaw = Number(content?.overlay);
+  const overlay = Number.isFinite(overlayRaw) ? Math.min(Math.max(overlayRaw, 0), 95) : 50;
+
+  const embedSrc = embedUrl ? resolveBackgroundMedia(backgroundVideo).src : '';
+
   return (
-    <section className="relative min-h-screen flex flex-col justify-end pt-32 pb-16 md:pb-24 bg-deep-charcoal text-white overflow-hidden">
-      {image && (
+    <section className="relative min-h-[560px] md:min-h-[92vh] flex flex-col justify-end pt-32 pb-14 md:pb-24 bg-deep-charcoal text-white overflow-hidden">
+      {(embedSrc || videoFile || image) && (
         <div className="absolute inset-0 z-0">
-          <img src={image} alt={imageAlt} className="w-full h-full object-cover opacity-50" />
+          {embedSrc ? (
+            <iframe
+              src={embedSrc}
+              title={headline}
+              tabIndex={-1}
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 left-1/2 w-[177.78vh] h-[56.25vw] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2"
+              style={{ opacity: overlay / 100 }}
+              allow="autoplay; encrypted-media"
+            />
+          ) : videoFile ? (
+            <video
+              src={videoFile}
+              poster={image || undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+              style={{ opacity: overlay / 100 }}
+            />
+          ) : (
+            <img src={image} alt={imageAlt} className="w-full h-full object-cover" style={{ opacity: overlay / 100 }} />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/40 to-transparent" />
         </div>
       )}
@@ -205,7 +237,7 @@ function ServicesSection({ content }: { content: Content }) {
   return (
     <section className="section-y bg-surface-container">
       <div className="container-x">
-        <div className="text-center mb-16 md:mb-24 max-w-2xl mx-auto">
+        <div className="text-center mb-10 md:mb-14 max-w-2xl mx-auto">
           {eyebrow && (
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               {eyebrow}
@@ -217,7 +249,7 @@ function ServicesSection({ content }: { content: Content }) {
             </h2>
           )}
         </div>
-        <div className="space-y-24 md:space-y-32">
+        <div className="space-y-14 md:space-y-20">
           {items.map((s, i) => (
             <div
               key={i}
@@ -268,32 +300,31 @@ async function InstrumentsSection({ content }: { content: Content }) {
     <section className="section-y">
       <div className="container-x">
         <SectionHead eyebrow={eyebrow} heading={heading} />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {instruments.map((inst) => (
             <div key={inst.id} className="group">
-              <div className="relative aspect-square overflow-hidden bg-surface-container mb-4">
+              <div className="relative aspect-[4/3] overflow-hidden bg-surface-container mb-5">
                 {inst.image ? (
                   <Image
                     src={inst.image.url}
                     alt={inst.image.altText || inst.name}
                     fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <span className="font-display text-5xl text-on-surface-variant/30">
+                    <span className="font-display text-4xl text-on-surface-variant/30">
                       {inst.name.charAt(0)}
                     </span>
                   </div>
                 )}
               </div>
-              <h3 className="font-headline text-headline-md text-on-surface mb-2 group-hover:text-muted-ochre transition-colors">
+              <h3 className="font-headline text-headline-md text-on-surface mb-3 group-hover:text-muted-ochre transition-colors">
                 {inst.name}
               </h3>
               {inst.description && (
-                <p className="font-body text-body-md text-on-surface-variant line-clamp-3">
-                  {inst.description}
-                </p>
+                <p className="font-body text-body-md text-on-surface-variant">{inst.description}</p>
               )}
             </div>
           ))}
@@ -314,7 +345,7 @@ async function EventsSection({ content }: { content: Content }) {
   return (
     <section className="section-y bg-surface-container-low">
       <div className="container-x">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-6">
           <div>
             {eyebrow && (
               <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
@@ -338,7 +369,7 @@ async function EventsSection({ content }: { content: Content }) {
             ))}
           </div>
         ) : (
-          <div className="card-surface p-16 text-center">
+          <div className="card-surface p-10 md:p-12 text-center">
             <h3 className="font-headline text-headline-md text-on-surface mb-2">
               Stay tuned for upcoming performances.
             </h3>
@@ -356,24 +387,17 @@ async function EventsSection({ content }: { content: Content }) {
 }
 
 async function TestimonialsSection({ content }: { content: Content }) {
-  const eyebrow = cx(content, 'eyebrow', 'WHAT PEOPLE ARE SAYING');
-  const heading = cx(content, 'heading', 'Kind words from communities.');
-  const limit = Number(content?.limit || 4);
-  const testimonials = await getTestimonials(true, limit);
+  const eyebrow = cx(content, 'eyebrow', 'In their words');
+  const heading = cx(content, 'heading', 'What people tell me afterwards.');
+  const limit = Number(content?.limit || 6);
+  const testimonials = await getTestimonials(false, limit);
   if (testimonials.length === 0) return null;
 
   return (
     <section className="section-y">
       <div className="container-x">
         <SectionHead eyebrow={eyebrow} heading={heading} />
-        {testimonials[0] && <TestimonialCard testimonial={testimonials[0]} variant="featured" />}
-        {testimonials.length > 1 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mt-16">
-            {testimonials.slice(1, 4).map((t) => (
-              <TestimonialCard key={t.id} testimonial={t} />
-            ))}
-          </div>
-        )}
+        <TestimonialFlipbook testimonials={testimonials} />
       </div>
     </section>
   );
@@ -386,13 +410,25 @@ async function FeaturedVideoSection({ content }: { content: Content }) {
   const thumbnail = cx(content, 'thumbnail');
   const ctaLabel = cx(content, 'ctaLabel', 'MORE PERFORMANCES');
   const ctaHref = cx(content, 'ctaHref', '/listen');
+  const embedUrl = toEmbedUrl(videoUrl);
+  const isFile = /^https?:|^\//.test(videoUrl) && !embedUrl;
 
   return (
     <section className="section-y bg-deep-charcoal text-warm-ivory">
       <div className="container-x">
         <SectionHead eyebrow={eyebrow} heading={heading} dark />
-        <div className="relative aspect-video w-full max-w-5xl mx-auto overflow-hidden">
-          {thumbnail ? (
+        <div className="relative aspect-video w-full max-w-5xl mx-auto overflow-hidden bg-black">
+          {embedUrl ? (
+            <iframe
+              src={embedUrl}
+              title={heading}
+              className="absolute inset-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          ) : isFile ? (
+            <video src={videoUrl} poster={thumbnail || undefined} controls className="w-full h-full object-contain" />
+          ) : thumbnail ? (
             <img src={thumbnail} alt={heading} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full bg-surface-container/20 flex items-center justify-center">
@@ -401,23 +437,9 @@ async function FeaturedVideoSection({ content }: { content: Content }) {
               </span>
             </div>
           )}
-          {videoUrl && (
-            <button
-              type="button"
-              onClick={() => window.open(videoUrl, '_blank', 'noopener,noreferrer')}
-              className="absolute inset-0 flex items-center justify-center group cursor-pointer"
-              aria-label="Play video"
-            >
-              <span className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-warm-ivory/90 text-deep-charcoal flex items-center justify-center transition-all group-hover:scale-110 group-hover:bg-muted-ochre group-hover:text-white">
-                <svg className="w-10 h-10 ml-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-            </button>
-          )}
         </div>
         {ctaLabel && (
-          <div className="text-center mt-10">
+          <div className="text-center mt-8">
             <Link href={ctaHref} className="btn-outline text-warm-ivory">
               {ctaLabel}
             </Link>
@@ -443,14 +465,14 @@ function CTASection({ content }: { content: Content }) {
   return (
     <section className="section-y">
       <div className="container-x">
-        <div className="card-surface p-10 md:p-20 text-center">
+        <div className="card-surface p-8 md:p-12 text-center">
           {eyebrow && (
             <div className="font-label text-label-sm uppercase tracking-widest text-muted-ochre mb-4">
               {eyebrow}
             </div>
           )}
           {headline && (
-            <h2 className="font-display text-headline-lg-mobile md:text-display-lg text-on-surface tracking-tight leading-tight mb-10 max-w-4xl mx-auto">
+            <h2 className="font-display text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight leading-tight mb-8 max-w-3xl mx-auto">
               {headline}
             </h2>
           )}
@@ -476,7 +498,7 @@ function QuoteSection({ content }: { content: Content }) {
         </blockquote>
         {(attribution || role) && (
           <div className="mt-8 font-label text-label-sm uppercase tracking-widest text-muted-ochre">
-            — {attribution}
+            {attribution}
             {role ? ` • ${role}` : ''}
           </div>
         )}
@@ -574,13 +596,29 @@ function VideoSection({ content }: { content: Content }) {
   const videoUrl = cx(content, 'videoUrl');
   const title = cx(content, 'title');
   const description = cx(content, 'description');
+  const embedUrl = toEmbedUrl(videoUrl);
   if (!videoUrl) return null;
   return (
     <section className="section-y">
       <div className="container-x max-w-5xl">
         <SectionHead eyebrow={cx(content, 'eyebrow')} heading={cx(content, 'heading')} />
         <div className="relative aspect-video overflow-hidden bg-deep-charcoal">
-          <video src={videoUrl} controls className="w-full h-full object-contain" poster={cx(content, 'thumbnail') || undefined} />
+          {embedUrl ? (
+            <iframe
+              src={embedUrl}
+              title={title || cx(content, 'heading', 'Video')}
+              className="absolute inset-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              src={videoUrl}
+              controls
+              className="w-full h-full object-contain"
+              poster={cx(content, 'thumbnail') || undefined}
+            />
+          )}
         </div>
         {(title || description) && (
           <div className="mt-6">
@@ -701,7 +739,13 @@ function ButtonsSection({ content }: { content: Content }) {
 
 // ---------- dispatcher ----------
 
-export default async function SectionRenderer({ sections }: { sections: PageSection[] }) {
+export default async function SectionRenderer({
+  sections,
+  afterFirst,
+}: {
+  sections: PageSection[];
+  afterFirst?: React.ReactNode;
+}) {
   const visible = [...sections]
     .filter((s) => s.isVisible !== false)
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -779,6 +823,11 @@ export default async function SectionRenderer({ sections }: { sections: PageSect
       default:
         break;
     }
+  }
+
+  // A slot for content that should sit directly under the hero, such as the events ticker.
+  if (afterFirst && rendered.length > 0) {
+    rendered.splice(1, 0, <div key="renderer-slot-after-first">{afterFirst}</div>);
   }
 
   return <>{rendered}</>;
